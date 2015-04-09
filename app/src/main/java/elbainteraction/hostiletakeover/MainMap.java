@@ -3,10 +3,22 @@ package elbainteraction.hostiletakeover;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
+import com.google.android.gms.maps.model.UrlTileProvider;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class MainMap extends FragmentActivity {
 
@@ -17,9 +29,37 @@ public class MainMap extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_map);
         setUpMapIfNeeded();
-        if(mMap!=null){
+        if(mMap!=null) {
             mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.getUiSettings().setZoomControlsEnabled(false);
+            mMap.getUiSettings().setZoomGesturesEnabled(false);
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(0));
+
+
+            initiateOverlay();
         }
+    }
+    /**
+     * Method for initiating the square tiles deviding the map in different zones.  **/
+    private void initiateOverlay() {
+        TileProvider tileProvider = new UrlTileProvider(512,512) {
+            @Override
+            public URL getTileUrl(int i, int i2, int i3) {
+                URL url = null;
+                try{
+                url = new URL("drawable/tile0.png");}
+                catch(MalformedURLException e){
+
+                }
+                return url;
+            }
+        };
+        TileOverlayOptions tileOverlayOptions =new TileOverlayOptions().tileProvider(tileProvider);
+        tileOverlayOptions.visible(true);
+        TileOverlay tileOverlay = mMap.addTileOverlay(tileOverlayOptions);
+
+
     }
 
     @Override
@@ -63,6 +103,7 @@ public class MainMap extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 }
