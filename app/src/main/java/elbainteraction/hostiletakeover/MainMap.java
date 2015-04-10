@@ -1,7 +1,13 @@
 package elbainteraction.hostiletakeover;
 
+import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -12,6 +18,7 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
@@ -23,6 +30,7 @@ import java.net.URL;
 public class MainMap extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private GameInstance gameInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,35 +39,10 @@ public class MainMap extends FragmentActivity {
         setUpMapIfNeeded();
         if(mMap!=null) {
             mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-            mMap.getUiSettings().setZoomControlsEnabled(false);
-            mMap.getUiSettings().setZoomGesturesEnabled(false);
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(0));
-
-
-            initiateOverlay();
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+            gameInstance = new GameInstance(0,mMap,GameInstance.LUND_MAP_X_START_POINT,GameInstance.LUND_MAP_Y_START_POINT,0.003,0.005,10);
+            gameInstance.initiateGame();
         }
-    }
-    /**
-     * Method for initiating the square tiles deviding the map in different zones.  **/
-    private void initiateOverlay() {
-        TileProvider tileProvider = new UrlTileProvider(512,512) {
-            @Override
-            public URL getTileUrl(int i, int i2, int i3) {
-                URL url = null;
-                try{
-                url = new URL("drawable/tile0.png");}
-                catch(MalformedURLException e){
-
-                }
-                return url;
-            }
-        };
-        TileOverlayOptions tileOverlayOptions =new TileOverlayOptions().tileProvider(tileProvider);
-        tileOverlayOptions.visible(true);
-        TileOverlay tileOverlay = mMap.addTileOverlay(tileOverlayOptions);
-
-
     }
 
     @Override
@@ -105,5 +88,13 @@ public class MainMap extends FragmentActivity {
     private void setUpMap() {
 
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }
+    public void takeOverZone(View v){
+        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String provider = service.getBestProvider(criteria, false);
+        Location location = service.getLastKnownLocation(provider);
+        LatLng userLocation = new LatLng(location.getLatitude(),location.getLongitude());
+        gameInstance.changeTileColor(userLocation);
     }
 }
