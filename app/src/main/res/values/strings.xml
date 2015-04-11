@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">HostileTakeover</string>
     <string name="title_activity_main_map">HosTile Takeover</string>
+    <string name="title_activity_start_screen">HosTile Takeover</string
+    <string name="action_settings">Settings</string>
+    <string name="teamColorRed">RED</string>
+    <string name="teamColorBlue">BLUE</string>
+    <string name="takeOverZone">Take Over Zone</string>
 </resources>

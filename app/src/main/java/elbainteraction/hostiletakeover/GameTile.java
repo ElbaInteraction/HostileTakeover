@@ -3,17 +3,17 @@ package elbainteraction.hostiletakeover;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * Created by Henrik on 2015-04-09.
+ * Object for storing data about a specific tile on the map. Specifies parameters like tile location, size and current owning team.
  */
 public class GameTile {
-    private double x, y, widthX, widthY;
+    private double lat, lng, height, width;
     private Team owningTeam;
 
-    public GameTile(double x, double y, double widthX, double widthY, Team owningTeam){
-        this.x = x;
-        this.y = y;
-        this.widthX = widthX;
-        this.widthY = widthY;
+    public GameTile(double lat, double lng, double height, double width, Team owningTeam) {
+        this.lat = lat;
+        this.lng = lng;
+        this.height = height;
+        this.width = width;
         this.owningTeam = owningTeam;
     }
 
@@ -23,28 +23,33 @@ public class GameTile {
         owningTeam = newOwningTeam;
         return oldOwningTeam;
     }
-    public boolean locationInTile(LatLng location) {
-        if(location.latitude>=x && location.latitude<x+widthX){
-            if(location.longitude<=y &&location.latitude>y+widthY )
-                return true;
 
+    public boolean locationInTile(LatLng location) {
+        if (location.latitude <= lat && location.latitude > lat - height) {
+            if (location.longitude >= lng && location.longitude < lng + width)
+
+                return true;
         }
         return false;
     }
 
-    public double getX() {
-        return x;
+    public double getLat() {
+
+        return lat;
     }
 
-    public double getY() {
-        return y;
+    public double getLng() {
+
+        return lng;
     }
 
-    public double getWidthX() {
-        return widthX;
+    public double getHeight() {
+
+        return height;
     }
 
-    public double getWidthY() {
-        return widthY;
+    public double getWidth() {
+
+        return width;
     }
 }

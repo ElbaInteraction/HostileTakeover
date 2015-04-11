@@ -1,5 +1,6 @@
 package elbainteraction.hostiletakeover;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,11 +39,14 @@ public class MainMap extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_map);
         setUpMapIfNeeded();
+        Intent intent = getIntent();
+        String teamColor = intent.getStringExtra("teamColor");
         if(mMap!=null) {
             mMap.setMyLocationEnabled(true);
             mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
-            gameInstance = new GameInstance(0,mMap,GameInstance.LUND_MAP_X_START_POINT,GameInstance.LUND_MAP_Y_START_POINT,0.003,0.005,10);
+            gameInstance = new GameInstance(0,mMap,GameInstance.LUND_MAP_X_START_POINT,GameInstance.LUND_MAP_Y_START_POINT,0.005,0.003,10);
             gameInstance.initiateGame();
+            gameInstance.setTeamColor(teamColor);
         }
     }
 
@@ -94,7 +99,13 @@ public class MainMap extends FragmentActivity {
         Criteria criteria = new Criteria();
         String provider = service.getBestProvider(criteria, false);
         Location location = service.getLastKnownLocation(provider);
-        LatLng userLocation = new LatLng(location.getLatitude(),location.getLongitude());
-        gameInstance.changeTileColor(userLocation);
+        if(location != null) {
+            LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+            gameInstance.changeTileTeam(userLocation);
+        } else {
+            Toast.makeText(getApplicationContext(), "Error recieving location from el Googl!",
+                    Toast.LENGTH_LONG).show();
+        }
+
     }
 }
