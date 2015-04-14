@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.os.Build;
 
 
-public class StartScreenActivity extends ActionBarActivity {
+public class CreateGameActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,29 +24,6 @@ public class StartScreenActivity extends ActionBarActivity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_start_screen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -72,12 +49,14 @@ public class StartScreenActivity extends ActionBarActivity {
             case R.id.RED:
                 intent.putExtra("teamColor","RED");
                 startActivity(intent);
+
                 break;
             case R.id.BLUE:
                 intent.putExtra("teamColor","BLUE");
                 startActivity(intent);
                 break;
         }
+        overridePendingTransition(0, 0);
     }
 
 }

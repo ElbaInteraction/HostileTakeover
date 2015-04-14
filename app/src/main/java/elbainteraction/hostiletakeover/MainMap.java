@@ -1,38 +1,33 @@
 package elbainteraction.hostiletakeover;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.telephony.gsm.GsmCellLocation;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.maps.model.TileOverlay;
-import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.android.gms.maps.model.TileProvider;
-import com.google.android.gms.maps.model.UrlTileProvider;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 
-public class MainMap extends FragmentActivity {
+public class MainMap extends FragmentActivity implements LocationListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GameInstance gameInstance;
+    private LocationManager locationManager;
+    private static final long MIN_TIME = 0;
+    private static final float MIN_DISTANCE = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +40,12 @@ public class MainMap extends FragmentActivity {
             mMap.setMyLocationEnabled(true);
             mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
             gameInstance = new GameInstance(0,mMap,GameInstance.LUND_MAP_X_START_POINT,GameInstance.LUND_MAP_Y_START_POINT,0.005,0.003,10);
-            gameInstance.initiateGame();
             gameInstance.setTeamColor(teamColor);
+            gameInstance.initiateGame();
+
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+
         }
     }
 
@@ -108,4 +107,29 @@ public class MainMap extends FragmentActivity {
         }
 
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+        mMap.animateCamera(cameraUpdate);
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+
 }

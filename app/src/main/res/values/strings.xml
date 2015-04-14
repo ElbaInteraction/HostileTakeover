@@ -1,9 +1,25 @@
 <resources>
-    <string name="app_name">HostileTakeover</string>
+    <string name="app_name">Hostile Takeover</string>
     <string name="title_activity_main_map">HosTile Takeover</string>
-    <string name="title_activity_start_screen">HosTile Takeover</string
+    <string name="title_activity_create_game">Create Game</string>
     <string name="action_settings">Settings</string>
     <string name="teamColorRed">RED</string>
     <string name="teamColorBlue">BLUE</string>
     <string name="takeOverZone">Take Over Zone</string>
+    <string name="title_activity_main_menu">Main Menu</string>
+
+    //Main Menu Navigation
+    <string name="mainmenu_new_game">New Game</string>
+            <string name="create_game">Create Game</string>
+    <string name="mainmenu_continue">Continue Game</string>
+    <string name="mainmenu_options">Options</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_continue_game">ContinueGameActivity</string>
+    <string name="title_activity_options">OptionsActivity</string>
+
+
+
+
 </resources>

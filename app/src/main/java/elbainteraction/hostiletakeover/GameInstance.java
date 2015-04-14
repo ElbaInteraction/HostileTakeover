@@ -75,11 +75,7 @@ public class GameInstance implements Runnable {
     }
 
     public void changeTileTeam(LatLng userLocation) {
-        /*for loop leta up vilken tile som ska ändras
-                kalla på changecolor, skicka in teamColor och Tilen som ska ändras
-    */
         GameTile gameTile = findTile(userLocation);
-
         changeTileColor(gameTile, userTeamColor);
 
     }
