@@ -14,7 +14,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 public class GameInstance implements Runnable {
     public static final double LUND_MAP_X_START_POINT = 55.719763;
     public static final double LUND_MAP_Y_START_POINT = 13.184195;
-    public static final Team NO_TEAM = new Team(Color.TRANSPARENT);
+    public static final Team NO_TEAM = new Team(Color.TRANSPARENT,"");
     private double overlayStartLat;
     private double overlayStartLng;
     private double overlayWidth;

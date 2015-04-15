@@ -18,8 +18,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_continue_game">Continue Game</string>
     <string name="title_activity_options">Options</string>
-
-
+    <string name="takeoverButton">Tile Captured!</string>
 
 
 </resources>

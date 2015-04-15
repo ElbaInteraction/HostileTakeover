@@ -1,14 +1,18 @@
 package elbainteraction.hostiletakeover;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.SensorManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.telephony.gsm.GsmCellLocation;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -28,6 +32,11 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
     private static final long MIN_TIME = 0;
     private static final float MIN_DISTANCE = 0;
 
+    private ProgressShaker progressShaker;
+    private ProgressBar progressBar;
+    private Vibrator v;
+    private SensorManager mSensorManager;
+    private Button takeoverButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +45,29 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         setUpMapIfNeeded();
         Intent intent = getIntent();
         String teamColor = intent.getStringExtra("teamColor");
-        if(mMap!=null) {
+        if (mMap != null) {
             mMap.setMyLocationEnabled(true);
             mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
-            gameInstance = new GameInstance(0,mMap,GameInstance.LUND_MAP_X_START_POINT,GameInstance.LUND_MAP_Y_START_POINT,0.005,0.003,10);
+
+            //Create the new  game instance.
+            gameInstance = new GameInstance(0, mMap, GameInstance.LUND_MAP_X_START_POINT, GameInstance.LUND_MAP_Y_START_POINT, 0.005, 0.003, 10);
             gameInstance.setTeamColor(teamColor);
             gameInstance.initiateGame();
 
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+
+            this.takeoverButton = (Button) this.findViewById(R.id.takeoverButton);
+
+            //progressssskit
+            progressBar = (ProgressBar) this.findViewById(R.id.takeOverProgress);
+            progressBar.setMax(12);
+
+            v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+            mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+            progressShaker = new ProgressShaker(progressBar, v, mSensorManager, takeoverButton);
+
+
 
         }
     }
@@ -53,6 +76,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        progressShaker.progressShakerResume();
     }
 
     /**
@@ -93,16 +117,23 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
 
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
-    public void takeOverZone(View v){
+
+    public void showProgressBar(View v) {
+        progressShaker.setBarVisible();
+
+    }
+
+    public void takeOverZone(View v) {
+        takeoverButton.setVisibility(View.INVISIBLE);
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String provider = service.getBestProvider(criteria, false);
         Location location = service.getLastKnownLocation(provider);
-        if(location != null) {
+        if (location != null) {
             LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
             gameInstance.changeTileTeam(userLocation);
         } else {
-            Toast.makeText(getApplicationContext(), "Error recieving location from el Googl!",
+            Toast.makeText(getApplicationContext(), "Error recieving location from Google!",
                     Toast.LENGTH_LONG).show();
         }
 

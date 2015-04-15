@@ -11,14 +11,18 @@ import java.util.ArrayList;
 public class Team {
     protected int teamColor;
     protected ArrayList<Member> members;
+    protected String teamName;
 
-    public Team(int teamColor){
-
+    public Team(int teamColor, String teamName){
+        this.teamName = teamName;
         this.teamColor = teamColor;
     }
 
     public Member addMember(Member member){
         members.add(member);
         return member;
+    }
+    public String getTeamName(){
+        return teamName;
     }
 }
