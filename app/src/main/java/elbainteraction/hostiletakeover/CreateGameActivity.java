@@ -2,15 +2,11 @@ package elbainteraction.hostiletakeover;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 
 
 public class CreateGameActivity extends ActionBarActivity {
@@ -44,7 +40,7 @@ public class CreateGameActivity extends ActionBarActivity {
 
     }
     public void setTeam (View view){
-        Intent intent = new Intent(view.getContext(), MainMap.class);
+        Intent intent = new Intent(view.getContext(), MainMapActivity.class);
         switch(view.getId()){
             case R.id.RED:
                 intent.putExtra("teamColor","RED");

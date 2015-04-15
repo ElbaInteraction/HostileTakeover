@@ -16,8 +16,8 @@
     <string name="title_activity_main">MainActivity</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_continue_game">ContinueGameActivity</string>
-    <string name="title_activity_options">OptionsActivity</string>
+    <string name="title_activity_continue_game">Continue Game</string>
+    <string name="title_activity_options">Options</string>
 
 
 
