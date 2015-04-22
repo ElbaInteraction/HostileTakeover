@@ -7,12 +7,12 @@
 https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=22:1A:3A:89:EC:51:57:81:D9:DC:9C:95:83:87:A2:49:FA:FD:23:0B%3Belbainteraction.hostiletakeover
 
     You can also add your credentials to an existing key, using this line:
-    22:1A:3A:89:EC:51:57:81:D9:DC:9C:95:83:87:A2:49:FA:FD:23:0B;elbainteraction.hostiletakeover
-
+    HENRIKPC:22:1A:3A:89:EC:51:57:81:D9:DC:9C:95:83:87:A2:49:FA:FD:23:0B;elbainteraction.hostiletakeover
+    HENRIKBÄRBAR:C5:7B:0D:B7:AB:3D:D3:98:22:64:31:84:08:1B:66:D3:E7:CB:22:00;elbainteraction.hostiletakeover
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
     -->
     <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
-        AIzaSyBYyAGnrenlrRRpuUo2PPGBWbuFoaE2Pgk
+      AIzaSyDv0IBUrB9aGfjrkPyJInfKOCpho1miOCo
     </string>
 </resources>
