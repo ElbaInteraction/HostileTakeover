@@ -4,16 +4,21 @@ package elbainteraction.hostiletakeover;
  * Created by Filip on 2015-04-15.
  */
 
+import android.util.Log;
+
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by Filip on 2015-04-15.
  */
-
-import android.util.Log;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 public class DatabaseConnection {
 
@@ -131,12 +136,16 @@ public class DatabaseConnection {
             if (resultSet.next()) {
                 double lat = resultSet.getDouble(2);
                 double lng = resultSet.getDouble(3);
-                Date date = resultSet.getDate(4);
+                Timestamp timestamp = resultSet.getTimestamp(4);
+                Date date = new Date(timestamp.getTime());
 
                 sql = "select count(*) from Teams;";
                 createStatement(sql);
                 resultSet = statement.executeQuery();
-                int numberOfTeams = resultSet.getInt(1);
+                int numberOfTeams = 0;
+                if(resultSet.next()){
+                    numberOfTeams = resultSet.getInt(1);
+                }
                 return new GameInstance(gameName, lat, lng, date, numberOfTeams);//är fel, men ändra i andra.
 
             }
@@ -160,12 +169,17 @@ public class DatabaseConnection {
                 String gameName = resultSet.getString(1);
                 double lat = resultSet.getDouble(2);
                 double lng = resultSet.getDouble(3);
-                Date date = resultSet.getDate(4);
+                Timestamp timestamp = resultSet.getTimestamp(4);
+                Date date = new Date(timestamp.getTime());
 
                 sql = "select count(*) from Teams;";
                 createStatement(sql);
+
                 resultSet = statement.executeQuery();
-                int numberOfTeams = resultSet.getInt(1);
+                int numberOfTeams = 0;
+                if(resultSet.next()){
+                    numberOfTeams = resultSet.getInt(1);
+                }
                 games.add( new GameInstance(gameName, lat, lng, date, numberOfTeams));
             }
             return games;

@@ -6,7 +6,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Created by Henrik on 2015-04-09.
