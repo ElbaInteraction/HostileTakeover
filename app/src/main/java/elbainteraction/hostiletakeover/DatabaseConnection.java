@@ -19,6 +19,8 @@ public class DatabaseConnection {
     PreparedStatement statement;
 
     private Connection connection;
+    private String userName;
+    private String password;
 
 
     public DatabaseConnection() {
@@ -26,7 +28,7 @@ public class DatabaseConnection {
         connection = null;
     }
 
-    public boolean openConnection(String userName, String password) {
+    public boolean openConnection() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(  //bör ändras till rätt url
@@ -138,8 +140,11 @@ public class DatabaseConnection {
         return null;
     }
 
-    public boolean setTileTeam(double lat, double lng, String teamName){
+    public boolean setTileTeam(GameTile tile){
 
+        double lat = tile.getLat();
+        double lng = tile.getLng();
+        String teamName = tile.getTeam().getTeamName();
         try {
             connection.setAutoCommit(false);
             String sql = "select * from Tiles where latitude = ? and longitude = ? for update;";
@@ -153,7 +158,7 @@ public class DatabaseConnection {
                 //if the correct team is already holding that tile
                 if(currentTeamName.equals(teamName)){
                     connection.rollback();
-                    return true;
+                    return false;
                 }
 
                 sql = "update Tiles set teamName = ? where latitude = ? and longitude = ?";
@@ -170,7 +175,7 @@ public class DatabaseConnection {
                     return false;
                 }
                 connection.commit();
-
+                return true;
 
             } else {
                 connection.rollback();

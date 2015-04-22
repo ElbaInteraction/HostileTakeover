@@ -24,6 +24,7 @@ public class GameInstance implements Runnable {
     private int numberOfTeams;
     private GoogleMap mMap;
     private int userTeamColor;
+    private DatabaseConnection db;
 
 
     public GameInstance(int numberOfTeams, GoogleMap mMap, double overLayStartLat, double overlayStartLng,
@@ -36,6 +37,9 @@ public class GameInstance implements Runnable {
         this.overlayHeight = overlayHeight;
         this.numberOfRows = numberOfRows;
         gameTiles = new GameTile[numberOfRows][numberOfRows];
+        db.openConnection();
+
+
 
     }
 
@@ -76,7 +80,11 @@ public class GameInstance implements Runnable {
 
     public void changeTileTeam(LatLng userLocation) {
         GameTile gameTile = findTile(userLocation);
-        changeTileColor(gameTile, userTeamColor);
+        if(db.setTileTeam(gameTile)){
+            changeTileColor(gameTile, userTeamColor);
+        }
+
+
 
     }
 

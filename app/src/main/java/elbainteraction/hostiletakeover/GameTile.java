@@ -52,4 +52,7 @@ public class GameTile {
 
         return width;
     }
+    public Team getTeam(){
+        return owningTeam;
+    }
 }
