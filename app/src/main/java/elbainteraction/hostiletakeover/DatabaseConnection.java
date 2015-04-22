@@ -74,6 +74,18 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
     }
+    public void createGame(String gameName, double startLat, double startLng, int duration){
+        return;
+
+    }
+    public GameInstance getGame(String gameName){
+        //Get a game with the specified name. Return the
+        return null;
+    }
+
+    public ArrayList<GameInstance> getAllGames(){
+        return null;
+    }
 
     public ArrayList<String> getTeams() {
 

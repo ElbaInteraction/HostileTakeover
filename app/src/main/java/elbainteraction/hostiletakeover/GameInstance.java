@@ -48,8 +48,12 @@ public class GameInstance implements Runnable {
      */
     public void initiateGame() {
         initiateOverlay();
+        gameTiles = db.getGameTiles();
         Thread thread = new Thread(this);
         thread.start();
+
+    }
+    public void initiateGame(String gameName){
 
     }
 
