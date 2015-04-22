@@ -1,12 +1,12 @@
 package elbainteraction.hostiletakeover;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
+
+import java.sql.Date;
 
 /**
  * Created by Henrik on 2015-04-09.
@@ -14,33 +14,38 @@ import com.google.android.gms.maps.model.PolygonOptions;
 public class GameInstance implements Runnable {
     public static final double LUND_MAP_X_START_POINT = 55.719763;
     public static final double LUND_MAP_Y_START_POINT = 13.184195;
-    public static final Team NO_TEAM = new Team(Color.TRANSPARENT,"");
+    public static final Team NO_TEAM = new Team(Color.TRANSPARENT, "");
+
+    public static final double overlayWidth = 0.005;
+    public final static double overlayHeight = 0.003;
+    public static final int numberOfRows = 10;
+
     private double overlayStartLat;
     private double overlayStartLng;
-    private double overlayWidth;
-    private double overlayHeight;
-    private int numberOfRows;
+
+    private String gameName;
+    private Date endTime;
+
     protected GameTile[][] gameTiles;
     private int numberOfTeams;
-    private GoogleMap mMap;
+    private GoogleMap map;
     private int userTeamColor;
     private DatabaseConnection db;
 
 
-    public GameInstance(int numberOfTeams, GoogleMap mMap, double overLayStartLat, double overlayStartLng,
-                        double overlayWidth, double overlayHeight, int numberOfRows) {
-        this.mMap = mMap;
-        this.numberOfTeams = numberOfTeams;
+    public GameInstance(String gameName, double overLayStartLat, double overlayStartLng, Date endTime,
+                        int numberOfTeams) {
+        this.gameName = gameName;
         this.overlayStartLat = overLayStartLat;
         this.overlayStartLng = overlayStartLng;
-        this.overlayWidth = overlayWidth;
-        this.overlayHeight = overlayHeight;
-        this.numberOfRows = numberOfRows;
-        gameTiles = new GameTile[numberOfRows][numberOfRows];
-        db.openConnection();
+        this.endTime = endTime;
+        this.numberOfTeams = numberOfTeams;
+        this.gameTiles = new GameTile[numberOfRows][numberOfRows];
+        db = DatabaseConnection.getInstance(); //hämtar med singleton.
+    }
 
-
-
+    public void setGoogleMap(GoogleMap map) {
+        this.map = map;
     }
 
     /**
@@ -48,12 +53,13 @@ public class GameInstance implements Runnable {
      */
     public void initiateGame() {
         initiateOverlay();
-        gameTiles = db.getGameTiles();
+        gameTiles = db.getGameTiles();//mähä
         Thread thread = new Thread(this);
         thread.start();
 
     }
-    public void initiateGame(String gameName){
+
+    public void initiateGame(String gameName) {
 
     }
 
@@ -74,21 +80,18 @@ public class GameInstance implements Runnable {
                         new LatLng(overlayStartLat - overlayHeight * i, overlayStartLng + overlayWidth * (j + 1)))
                         .fillColor(Color.TRANSPARENT)
                         .strokeWidth(1);
-                mMap.addPolygon(rectangle);
+                map.addPolygon(rectangle);
             }
 
         }
-
 
     }
 
     public void changeTileTeam(LatLng userLocation) {
         GameTile gameTile = findTile(userLocation);
-        if(db.setTileTeam(gameTile)){
+        if (db.setTileTeam(gameTile)) {
             changeTileColor(gameTile, userTeamColor);
         }
-
-
 
     }
 
@@ -103,7 +106,6 @@ public class GameInstance implements Runnable {
         return null;
     }
 
-
     private void changeTileColor(GameTile gameTile, int teamColor) {
 
         PolygonOptions rectangle = new PolygonOptions().add(
@@ -113,18 +115,16 @@ public class GameInstance implements Runnable {
                 new LatLng(gameTile.getLat(), gameTile.getLng() + gameTile.getWidth()))
                 .fillColor(teamColor)
                 .strokeWidth(1);
-        mMap.addPolygon(rectangle);
+        map.addPolygon(rectangle);
 
     }
-
 
     @Override
     public void run() {
-
     }
 
     public void setTeamColor(String teamColor) {
-        switch (teamColor){
+        switch (teamColor) {
             case "RED":
                 this.userTeamColor = Color.argb(70, 254, 0, 0);
                 break;
@@ -132,6 +132,5 @@ public class GameInstance implements Runnable {
                 this.userTeamColor = Color.argb(70, 0, 0, 254);
                 break;
         }
-
     }
 }

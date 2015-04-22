@@ -13,6 +13,7 @@ import android.util.Log;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class DatabaseConnection {
 
@@ -22,11 +23,20 @@ public class DatabaseConnection {
     private String userName;
     private String password;
 
+    private static DatabaseConnection instance = null;
 
-    public DatabaseConnection() {
+    protected DatabaseConnection(){
         statement = null;
         connection = null;
     }
+
+    public static DatabaseConnection getInstance() {
+        if(instance == null){
+            instance = new DatabaseConnection();
+        }
+        return instance;
+    }
+
 
     public boolean openConnection() {
         try {
@@ -74,16 +84,96 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
     }
-    public void createGame(String gameName, double startLat, double startLng, int duration){
-        return;
+
+    public boolean createGame(String gameName, double startLat, double startLng, int duration) {
+
+        try {
+            String sql = "select now();";
+            createStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+            Date date = null;
+            if (resultSet.next()) {
+                date = resultSet.getDate(1);
+            }
+
+            Calendar cal = Calendar.getInstance(); // creates calendar
+            cal.setTime(date); // sets calendar time/date
+            cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+
+            sql = "insert into Games values(?,?,?,'" + cal.getTime().toString() + "');";
+            createStatement(sql);
+            statement.setString(1, gameName);
+            statement.setDouble(2, startLat);
+            statement.setDouble(3, startLng);
+            int rows = statement.executeUpdate();
+            if (rows == 1) {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            closeStatement();
+        }
+
+        return false;
 
     }
-    public GameInstance getGame(String gameName){
-        //Get a game with the specified name. Return the
+
+    public GameInstance getGame(String gameName) {
+
+        try {
+            String sql = "select * from Games where gameName = ?";
+            createStatement(sql);
+            statement.setString(1, gameName);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                double lat = resultSet.getDouble(2);
+                double lng = resultSet.getDouble(3);
+                Date date = resultSet.getDate(4);
+
+                sql = "select count(*) from Teams;";
+                createStatement(sql);
+                resultSet = statement.executeQuery();
+                int numberOfTeams = resultSet.getInt(1);
+                return new GameInstance(gameName, lat, lng, date, numberOfTeams);//är fel, men ändra i andra.
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement();
+        }
         return null;
     }
 
-    public ArrayList<GameInstance> getAllGames(){
+    public ArrayList<GameInstance> getAllGames() {
+
+        ArrayList<GameInstance> games = new ArrayList<>();
+
+        try {
+            String sql = "select * from Games";
+            createStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                String gameName = resultSet.getString(1);
+                double lat = resultSet.getDouble(2);
+                double lng = resultSet.getDouble(3);
+                Date date = resultSet.getDate(4);
+
+                sql = "select count(*) from Teams;";
+                createStatement(sql);
+                resultSet = statement.executeQuery();
+                int numberOfTeams = resultSet.getInt(1);
+                games.add( new GameInstance(gameName, lat, lng, date, numberOfTeams));
+            }
+            return games;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeStatement();
+        }
         return null;
     }
 
