@@ -1,7 +1,7 @@
 package elbainteraction.hostiletakeover;
 
 /**
- * Created by Henrik on 2015-04-15.
+ * Created by Filip on 2015-04-15.
  */
 
 import java.sql.Connection;
@@ -9,10 +9,10 @@ import java.sql.Connection;
  * Created by Filip on 2015-04-15.
  */
 
-        import android.util.Log;
+import android.util.Log;
 
-        import java.sql.*;
-        import java.util.ArrayList;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class DatabaseConnection {
 
@@ -55,14 +55,14 @@ public class DatabaseConnection {
         connection = null;
     }
 
-    public boolean isConnected(){
+    public boolean isConnected() {
         return connection != null;
     }
 
-    void createStatement(String sql){
-        try{
+    void createStatement(String sql) {
+        try {
             statement = connection.prepareStatement(sql);
-        } catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -75,18 +75,18 @@ public class DatabaseConnection {
         }
     }
 
-    public ArrayList<String> getTeams(){
+    public ArrayList<String> getTeams() {
 
         ArrayList<String> teams = new ArrayList<String>();
 
-        try{
+        try {
             String sql = "select teamName from Teams";
             createStatement(sql);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 teams.add(resultSet.getString(1));
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             closeStatement();
@@ -94,53 +94,57 @@ public class DatabaseConnection {
         return teams;
     }
 
-    public ArrayList<GameTile> getGameTiles(){
+    public GameTile[][] getGameTiles() {
 
-        ArrayList<GameTile> tiles = new ArrayList<GameTile>();
-
-        try{
+        try {
             String sql = "select * from Tiles natural join Teams";
             createStatement(sql);
             ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()){
-                double lat = resultSet.getDouble(1);
-                double lng = resultSet.getDouble(2);
-                double height = resultSet.getDouble(3);
-                double width = resultSet.getDouble(4);
-                String teamName = resultSet.getString(5);
-                int color = resultSet.getInt(6);
+            int rows = (int) Math.sqrt(resultSet.getFetchSize());
+            GameTile[][] tiles = new GameTile[rows][rows];
 
-                Team team = new Team(color,teamName);
-                GameTile tile = new GameTile(lat, lng, height, width, team);
-                tiles.add(tile);
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < rows; j++) {
+                    resultSet.next();
+
+                    double lat = resultSet.getDouble(1);
+                    double lng = resultSet.getDouble(2);
+                    double height = resultSet.getDouble(3);
+                    double width = resultSet.getDouble(4);
+                    String teamName = resultSet.getString(5);
+                    int color = resultSet.getInt(6);
+
+                    Team team = new Team(color, teamName);
+                    GameTile tile = new GameTile(lat, lng, height, width, team);
+                    tiles[i][j] = tile;
+                }
             }
-
             return tiles;
 
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public Team getTileTeam(double lat, double lng){
+    public Team getTileTeam(double lat, double lng) {
 
-        try{
+        try {
             String sql = "select teamName, teamColor from Tiles natural join Teams where latitude = ? and longitude = ?";
             createStatement(sql);
             statement.setDouble(1, lat);
             statement.setDouble(2, lng);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
-                return new Team(resultSet.getInt(2),resultSet.getString(1));
+            while (resultSet.next()) {
+                return new Team(resultSet.getInt(2), resultSet.getString(1));
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public boolean setTileTeam(GameTile tile){
+    public boolean setTileTeam(GameTile tile) {
 
         double lat = tile.getLat();
         double lng = tile.getLng();
@@ -152,11 +156,11 @@ public class DatabaseConnection {
             statement.setDouble(1, lat);
             statement.setDouble(2, lng);
             ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
 
                 String currentTeamName = resultSet.getString(5);
                 //if the correct team is already holding that tile
-                if(currentTeamName.equals(teamName)){
+                if (currentTeamName.equals(teamName)) {
                     connection.rollback();
                     return false;
                 }
@@ -170,7 +174,7 @@ public class DatabaseConnection {
                 int count = statement.executeUpdate();
                 closeStatement();
 
-                if(count != 1) {
+                if (count != 1) {
                     connection.rollback();
                     return false;
                 }
@@ -182,12 +186,12 @@ public class DatabaseConnection {
                 return false;
             }
 
-        } catch (SQLException e){
+        } catch (SQLException e) {
             closeStatement();
             try {
                 connection.rollback();
                 connection.setAutoCommit(true);
-            } catch (SQLException ee){
+            } catch (SQLException ee) {
                 ee.printStackTrace();
             }
             e.printStackTrace();
@@ -196,7 +200,7 @@ public class DatabaseConnection {
             closeStatement();
             try {
                 connection.setAutoCommit(true);
-            } catch (SQLException ee){
+            } catch (SQLException ee) {
                 ee.printStackTrace();
             }
         }
