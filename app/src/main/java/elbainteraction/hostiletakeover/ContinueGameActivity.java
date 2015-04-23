@@ -1,53 +1,66 @@
 package elbainteraction.hostiletakeover;
 
-import android.app.ListActivity;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.provider.ContactsContract;
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Gravity;
+import android.support.v4.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.SimpleCursorAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 
-public class ContinueGameActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>{
-
-    // This is the Adapter being used to display the list's data
-    SimpleCursorAdapter mAdapter;
+public class CreateGameActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_continue_game);
+        setContentView(R.layout.activity_start_screen);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new PlaceholderFragment())
+                    .commit();
+        }
     }
 
-    // Called when a new Loader needs to be created
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // Now create and return a CursorLoader that will take care of
-        // creating a Cursor for the data being displayed.
-        return null;
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment extends Fragment {
+
+        public PlaceholderFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_start_screen, container, false);
+            return rootView;
+        }
+
+
     }
 
-    // Called when a previously created loader has finished loading
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // Swap the new cursor in.  (The framework will take care of closing the
-        // old cursor once we return.)
-        mAdapter.swapCursor(data);
+    public void createGame(View view){
+        Intent intent = new Intent(view.getContext(), MainMapActivity.class);
+        intent.putExtra("gameType", "newGame");
+        EditText editText = (EditText) findViewById(R.id.gameName);
+        intent.putExtra("gameName", editText.getText().toString());
+
+        Spinner temp =  (Spinner) findViewById(R.id.numberOfTeams);
+        intent.putExtra("numberOfTeams", Integer.parseInt(temp.getSelectedItem().toString()));
+
+        temp = (Spinner) findViewById(R.id.mapSize);
+        intent.putExtra("mapSize", Integer.parseInt(temp.getSelectedItem().toString()));
+
+        temp = (Spinner) findViewById(R.id.gameTime);
+        intent.putExtra("gameTime", Integer.parseInt(temp.getSelectedItem().toString()));
+
+        startActivity(intent);
+
+
     }
 
-    // Called when a previously created loader is reset, making the data unavailable
-    public void onLoaderReset(Loader<Cursor> loader) {
-        // This is called when the last Cursor provided to onLoadFinished()
-        // above is about to be closed.  We need to make sure we are no
-        // longer using it.
-        mAdapter.swapCursor(null);
-    }
 
 }
