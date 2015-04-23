@@ -43,16 +43,29 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_map);
         setUpMapIfNeeded();
+        GameInstanceFactory gameInstanceFactory = new GameInstanceFactory();
+
         Intent intent = getIntent();
+        //If the intent comes from the new game screen.
+        if(intent.getStringExtra("gameType").equals("newGame")){
+            gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("gameName"),
+                    intent.getIntExtra("numberOfTeams",0), intent.getIntExtra("mapSize",10),intent.getIntExtra("gameTime",0), mMap);
+            gameInstance.initiateGame();
+
+
+        }
+        //Else if the intent comes from the continue game screen
+        else{
+            gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("teamName"),mMap);
+
+
+        }
+
+
         String teamColor = intent.getStringExtra("teamColor");
         if (mMap != null) {
             mMap.setMyLocationEnabled(true);
             mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
-
-            //Create the new  game instance.
-            gameInstance = new GameInstance(0, mMap, GameInstance.LUND_MAP_X_START_POINT, GameInstance.LUND_MAP_Y_START_POINT, 0.005, 0.003, 10);
-            gameInstance.setTeamColor(teamColor);
-            gameInstance.initiateGame();
 
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER

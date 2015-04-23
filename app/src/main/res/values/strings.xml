@@ -10,7 +10,7 @@
 
     //Main Menu Navigation
     <string name="mainmenu_new_game">New Game</string>
-            <string name="create_game">Create Game</string>
+    <string name="create_game">Create Game</string>
     <string name="mainmenu_continue">Continue Game</string>
     <string name="mainmenu_options">Options</string>
     <string name="title_activity_main">MainActivity</string>
@@ -19,6 +19,24 @@
     <string name="title_activity_continue_game">Continue Game</string>
     <string name="title_activity_options">Options</string>
     <string name="takeoverButton">Tile Captured!</string>
+    <string name="create_game_button">Create Game</string>
+
+
+    <string-array name="number_of_teams">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="size_of_map">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+    </string-array>
+    <string-array name="time_of_game">
+        <item>2</item>
+        <item>10</item>
+        <item>24</item>
+    </string-array>
 
 
 </resources>

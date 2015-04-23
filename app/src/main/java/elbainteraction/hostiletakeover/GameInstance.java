@@ -18,7 +18,8 @@ public class GameInstance implements Runnable {
 
     public static final double overlayWidth = 0.005;
     public final static double overlayHeight = 0.003;
-    public static final int numberOfRows = 10;
+
+    private int numberOfRows;
 
     private double overlayStartLat;
     private double overlayStartLng;
@@ -34,12 +35,13 @@ public class GameInstance implements Runnable {
 
 
     public GameInstance(String gameName, double overLayStartLat, double overlayStartLng, Date endTime,
-                        int numberOfTeams) {
+                        int numberOfTeams, int numberOfRows) {
         this.gameName = gameName;
         this.overlayStartLat = overLayStartLat;
         this.overlayStartLng = overlayStartLng;
         this.endTime = endTime;
         this.numberOfTeams = numberOfTeams;
+        this.numberOfRows = numberOfRows;
         this.gameTiles = new GameTile[numberOfRows][numberOfRows];
         db = DatabaseConnection.getInstance(); //hämtar med singleton.
     }

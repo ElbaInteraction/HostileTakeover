@@ -19,6 +19,7 @@ public class ProgressShaker {
     private Button takeoverButton;
 
     public ProgressShaker(final ProgressBar progressBar, final Vibrator v, SensorManager mSensorManager, final Button takeoverButton){
+
       this.takeoverButton = takeoverButton;
       this.progressBar = progressBar;
       this.v = v;
@@ -42,7 +43,9 @@ public class ProgressShaker {
                 }
 
             }
-        });
+        }
+        );
+        progressShakerPause();
 
     }
 

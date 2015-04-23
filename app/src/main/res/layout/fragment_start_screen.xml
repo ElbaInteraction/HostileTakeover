@@ -7,21 +7,65 @@
     tools:context="elbainteraction.hostiletakeover.CreateGameActivity$PlaceholderFragment"
     android:orientation="vertical">
 
-    <Button
-        android:layout_width="fill_parent"
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:name="red_button"
-        android:text="@string/teamColorRed"
-        android:id="@+id/RED"
-        android:onClick="setTeam"/>
+        android:text="GameName"
+        android:id="@+id/textView" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/gameName"
+        android:layout_gravity="center_horizontal" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Number of Teams"
+        android:id="@+id/textView2" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/numberOfTeams"
+        android:entries="@array/number_of_teams"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Size of Map"
+        android:id="@+id/textView3" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/mapSize"
+        android:layout_gravity="center_horizontal"
+        android:entries="@array/size_of_map"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Duration of Game (Hours)"
+        android:id="@+id/textView4" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/gameTime"
+        android:layout_gravity="center_horizontal"
+        android:entries="@array/time_of_game"/>
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:name="blue_button"
-        android:text="@string/teamColorBlue"
-        android:id="@+id/BLUE"
-        android:onClick="setTeam"
+        android:name="create_game_button"
+        android:text="@string/create_game_button"
+        android:id="@+id/create_game_button"
+        android:onClick="createGame"
         />
 
 </LinearLayout>
