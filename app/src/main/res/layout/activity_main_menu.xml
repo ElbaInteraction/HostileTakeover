@@ -6,19 +6,18 @@
     android:paddingTop="50dp"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
-    android:background="@color/black"
-
-
+    android:background="@color/background"
     >
 
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="180dp"
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
-        android:src ="@mipmap/ic_launcher"
+        android:src ="@drawable/web_hi_res_512"
         android:layout_marginBottom="20dp"
+
         />
 
     <Button
@@ -26,30 +25,34 @@
         android:layout_height="70dp"
         android:text="@string/mainmenu_new_game"
         android:id="@+id/new_game"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:onClick="goToNewGame"
-        android:nestedScrollingEnabled="true"
+        android:background="@drawable/green_button"
         android:layout_marginBottom="20dp"
-        />
+
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="70dp"
         android:text="@string/mainmenu_continue"
         android:id="@+id/continue_game"
-        android:layout_below="@+id/new_game"
-        android:layout_centerHorizontal="true"
+
         android:onClick="goToContinueGame"
-        android:layout_marginBottom="20dp"/>
+        android:background="@drawable/blue_button"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="70dp"
         android:text="@string/mainmenu_options"
         android:id="@+id/options"
-        android:layout_below="@+id/continue_game"
-        android:layout_centerHorizontal="true"
         android:onClick="goToOptions"
+        android:background="@drawable/red_button"
+
+        android:textColor="@color/black"
+        android:textSize="20sp"
         />
 </LinearLayout>

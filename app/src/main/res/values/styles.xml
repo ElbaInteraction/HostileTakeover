@@ -3,6 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+
     </style>
 
     <style name="tallerBarStyle" parent="@android:style/Widget.SeekBar" id="tallerBarStyle" >
@@ -12,4 +13,10 @@
         <item name="android:minHeight">8dip</item>
         <item name="android:maxHeight">20dip</item>
     </style>
+    <style name="darkSpinner" parent="android:style/Widget.Spinner" id="darkSpinner">
+        <item name="android:background">@color/white</item>
+        <item name="android:dropDownSelector">@color/item_background</item>
+    </style>
+
+
 </resources>

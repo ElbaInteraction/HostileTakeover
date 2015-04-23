@@ -37,10 +37,13 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
     private Vibrator v;
     private SensorManager mSensorManager;
     private Button takeoverButton;
+    private boolean firstOnResume;
+    private Button startTakeOverButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.firstOnResume = true;
         setContentView(R.layout.activity_main_map);
         setUpMapIfNeeded();
         GameInstanceFactory gameInstanceFactory = new GameInstanceFactory();
@@ -71,6 +74,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
 
             this.takeoverButton = (Button) this.findViewById(R.id.takeoverButton);
+            this.startTakeOverButton = (Button) this.findViewById(R.id.startTakeoverButton);
 
             //progressssskit
             progressBar = (ProgressBar) this.findViewById(R.id.takeOverProgress);
@@ -86,10 +90,22 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        progressShaker.progressShakerPause();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
-        progressShaker.progressShakerResume();
+        if(!firstOnResume) {
+            progressShaker.progressShakerResume();
+        }
+        else
+        {
+            firstOnResume = false;
+        }
     }
 
     /**
@@ -127,17 +143,23 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
     public void showProgressBar(View v) {
-        progressShaker.setBarVisible();
+        if(progressBar.getVisibility() == View.INVISIBLE && takeoverButton.getVisibility()== View.INVISIBLE){
+            startTakeOverButton.setVisibility(View.INVISIBLE);
+            progressShaker.setBarVisible();
+            progressShaker.progressShakerResume();
+
+        }
+
 
     }
 
     public void takeOverZone(View v) {
         takeoverButton.setVisibility(View.INVISIBLE);
+        startTakeOverButton.setVisibility(View.VISIBLE);
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String provider = service.getBestProvider(criteria, false);

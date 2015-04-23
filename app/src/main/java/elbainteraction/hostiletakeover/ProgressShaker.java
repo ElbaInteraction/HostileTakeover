@@ -49,7 +49,6 @@ public class ProgressShaker {
 
     }
 
-
     protected void progressShakerResume() {
         mSensorManager.registerListener(mSensorListener,
                 mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
@@ -61,10 +60,15 @@ public class ProgressShaker {
     }
 
     public void setBarVisible() {
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.setProgress(0);
-        progressShakerResume();
+
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgress(0);
+            progressShakerResume();
+
+
+
 
     }
+
 }
 

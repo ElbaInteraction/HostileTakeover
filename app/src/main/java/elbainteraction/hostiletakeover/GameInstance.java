@@ -34,7 +34,7 @@ public class GameInstance implements Runnable {
     private DatabaseConnection db;
 
 
-    public GameInstance(String gameName, double overLayStartLat, double overlayStartLng, Date endTime,
+    public GameInstance(String gameName, double overLayStartLat, double overlayStartLng, //Date endTime,
                         int numberOfTeams, int numberOfRows) {
         this.gameName = gameName;
         this.overlayStartLat = overLayStartLat;
@@ -55,14 +55,13 @@ public class GameInstance implements Runnable {
      */
     public void initiateGame() {
         initiateOverlay();
-        gameTiles = db.getGameTiles();//mähä
         Thread thread = new Thread(this);
         thread.start();
 
     }
 
     public void initiateGame(String gameName) {
-
+        gameTiles = db.getGameTiles();//mähä
     }
 
     /**

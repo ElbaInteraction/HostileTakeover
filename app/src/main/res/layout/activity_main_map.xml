@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".MainMap"
     tools:ignore="MergeRootFrame"
-    android:id="@+id/frameLayoutMainMap">
+    android:id="@+id/frameLayoutMainMap"
+    android:background="@color/background">
 
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,13 +16,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         tools:layout="@android:layout/simple_list_item_1" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/takeOverZone"
-        android:layout_gravity="bottom"
-        android:onClick="showProgressBar"
-        android:id="@+id/startTakeOverFragmentButton" />
+
 
     <ProgressBar
         style="@style/tallerBarStyle"
@@ -39,6 +34,18 @@
         android:onClick="takeOverZone"
         android:id="@+id/takeoverButton"
         android:visibility="invisible"
+        android:background="@drawable/green_button"
+        android:textSize="20sp"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/takeOverZone"
+        android:layout_gravity="bottom"
+        android:onClick="showProgressBar"
+        android:id="@+id/startTakeoverButton"
+        android:background="@drawable/green_button"
+        android:textSize="20sp"
         />
 
 
