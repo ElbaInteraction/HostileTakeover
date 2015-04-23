@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 
 public class CreateGameActivity extends ActionBarActivity {
@@ -39,20 +41,26 @@ public class CreateGameActivity extends ActionBarActivity {
 
 
     }
-    public void setTeam (View view){
-        Intent intent = new Intent(view.getContext(), MainMapActivity.class);
-        switch(view.getId()){
-            case R.id.RED:
-                intent.putExtra("teamColor","RED");
-                startActivity(intent);
 
-                break;
-            case R.id.BLUE:
-                intent.putExtra("teamColor","BLUE");
-                startActivity(intent);
-                break;
-        }
-        overridePendingTransition(0, 0);
+    public void createGame(View view){
+        Intent intent = new Intent(view.getContext(), MainMapActivity.class);
+        intent.putExtra("gameType", "newGame");
+        EditText editText = (EditText) findViewById(R.id.gameName);
+        intent.putExtra("gameName", editText.getText().toString());
+
+        Spinner temp =  (Spinner) findViewById(R.id.numberOfTeams);
+        intent.putExtra("numberOfTeams", Integer.parseInt(temp.getSelectedItem().toString()));
+
+        temp = (Spinner) findViewById(R.id.mapSize);
+        intent.putExtra("mapSize", Integer.parseInt(temp.getSelectedItem().toString()));
+
+        temp = (Spinner) findViewById(R.id.gameTime);
+        intent.putExtra("gameTime", Integer.parseInt(temp.getSelectedItem().toString()));
+
+        startActivity(intent);
+
+
     }
+
 
 }
