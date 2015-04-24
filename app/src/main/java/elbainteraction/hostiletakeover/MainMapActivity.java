@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -82,7 +83,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
 
             v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
             mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
-            progressShaker = new ProgressShaker(progressBar, v, mSensorManager, takeoverButton);
+            progressShaker = new ProgressShaker(progressBar, v, mSensorManager, takeoverButton, (TextView)findViewById(R.id.shake_text_prompt));
 
 
 
@@ -149,6 +150,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
     public void showProgressBar(View v) {
         if(progressBar.getVisibility() == View.INVISIBLE && takeoverButton.getVisibility()== View.INVISIBLE){
             startTakeOverButton.setVisibility(View.INVISIBLE);
+            findViewById(R.id.shake_text_prompt).setVisibility(View.VISIBLE);
             progressShaker.setBarVisible();
             progressShaker.progressShakerResume();
 

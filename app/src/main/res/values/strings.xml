@@ -19,6 +19,8 @@
     <string name="title_activity_options">Options</string>
     <string name="takeoverButton">Click to finish capture!</string>
     <string name="create_game_button">Create Game</string>
+    <string name="log_out_button">Log Out</string>
+    <string name="shake_text_prompt">Shake to Caputre!</string>
 
 
     <string-array name="number_of_teams">

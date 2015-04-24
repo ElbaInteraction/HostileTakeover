@@ -3,56 +3,105 @@
     android:layout_height="match_parent"
     tools:context="elbainteraction.hostiletakeover.MainMenuActivity"
     android:orientation="vertical"
-    android:paddingTop="50dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
+    android:paddingTop="1dp"
+    android:paddingLeft="1dp"
+    android:paddingRight="1dp"
     android:background="@color/background"
+    android:weightSum="3"
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="2"
+        android:layout_weight="1">
 
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="180dp"
-        android:id="@+id/imageView"
-        android:layout_gravity="center_horizontal"
-        android:src ="@drawable/web_hi_res_512"
-        android:layout_marginBottom="20dp"
+        //NEW GAME
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/mainmenu_new_game"
+            android:id="@+id/new_game"
+            android:onClick="goToNewGame"
+            android:background="@drawable/green_button"
 
-        />
+            android:textColor="@color/black"
+            android:textSize="20sp"
 
+            android:layout_above="@+id/continue_game"
+            android:layout_alignLeft="@+id/continue_game"
+            android:layout_alignStart="@+id/continue_game"
+            android:layout_alignParentEnd="false"
+            android:layout_weight="1"/>
+        //LOGO
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageView"
+            android:src ="@drawable/web_hi_res_512"
+
+            android:layout_above="@+id/continue_game"
+            android:layout_toRightOf="@+id/new_game"
+            android:layout_toEndOf="@+id/new_game"
+            android:contentDescription="gameIcon"
+            android:layout_weight="1"/>
+
+
+    </LinearLayout>
+
+    //CONTINUE GAME
     <Button
-        android:layout_width="fill_parent"
-        android:layout_height="70dp"
-        android:text="@string/mainmenu_new_game"
-        android:id="@+id/new_game"
-        android:onClick="goToNewGame"
-        android:background="@drawable/green_button"
-        android:layout_marginBottom="20dp"
-
-        android:textColor="@color/black"
-        android:textSize="20sp"/>
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:text="@string/mainmenu_continue"
         android:id="@+id/continue_game"
-
         android:onClick="goToContinueGame"
         android:background="@drawable/blue_button"
-        android:layout_marginBottom="20dp"
         android:textColor="@color/black"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:layout_weight="1"
 
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="2"
+        android:layout_weight="1">
+    //OPTIONS
     <Button
-        android:layout_width="fill_parent"
-        android:layout_height="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:text="@string/mainmenu_options"
         android:id="@+id/options"
         android:onClick="goToOptions"
-        android:background="@drawable/red_button"
-
+        android:background="@drawable/yellow_button"
         android:textColor="@color/black"
         android:textSize="20sp"
+
+        android:layout_below="@+id/continue_game"
+        android:layout_alignLeft="@+id/continue_game"
+        android:layout_alignStart="@+id/continue_game"
+        android:layout_alignParentEnd="false"
+        android:layout_weight="1"
         />
+    //LOG OUT
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/log_out_button"
+        android:id="@+id/log_out"
+        android:background="@drawable/red_button"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+
+        android:layout_below="@+id/continue_game"
+        android:layout_alignRight="@+id/continue_game"
+        android:layout_alignEnd="@+id/continue_game"
+        android:layout_weight="1"/>
+
+   </LinearLayout>
+
 </LinearLayout>

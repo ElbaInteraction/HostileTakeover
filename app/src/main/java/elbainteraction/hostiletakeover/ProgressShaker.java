@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class ProgressShaker {
 
@@ -17,8 +18,9 @@ public class ProgressShaker {
     private Vibrator v;
     private ProgressBar progressBar;
     private Button takeoverButton;
+    private TextView shakeText;
 
-    public ProgressShaker(final ProgressBar progressBar, final Vibrator v, SensorManager mSensorManager, final Button takeoverButton){
+    public ProgressShaker(final ProgressBar progressBar, final Vibrator v, SensorManager mSensorManager, final Button takeoverButton, final TextView shakeText){
 
       this.takeoverButton = takeoverButton;
       this.progressBar = progressBar;
@@ -36,6 +38,7 @@ public class ProgressShaker {
                 if(timesShaken == 12) {
                     // Vibrate for 500 milliseconds
                     v.vibrate(500);
+                    shakeText.setVisibility(View.INVISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
                     progressShakerPause();
                     timesShaken = 0;

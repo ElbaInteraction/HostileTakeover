@@ -9,7 +9,7 @@
         android:bottom="0dp"
         />
     <stroke
-        android:width="2dp"
+        android:width="@dimen/button_stroke_width"
         android:color="@color/light_blue"/>
 
 </shape>
