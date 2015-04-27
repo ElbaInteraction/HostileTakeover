@@ -12,7 +12,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -38,9 +38,11 @@
         <activity
             android:name=".CreateGameActivity"
             android:label="@string/title_activity_create_game" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="elbainteraction.hostiletakeover.MainMenuActivity" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -55,10 +57,24 @@
         <activity
             android:name=".ContinueGameActivity"
             android:label="@string/title_activity_continue_game" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="elbainteraction.hostiletakeover.MainMenuActivity" />
         </activity>
         <activity
             android:name=".OptionsActivity"
             android:label="@string/title_activity_options" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="elbainteraction.hostiletakeover.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".TutorialActivity"
+            android:label="@string/title_activity_tutorial"
+            android:parentActivityName=".MainMenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="elbainteraction.hostiletakeover.MainMenuActivity" />
         </activity>
     </application>
 

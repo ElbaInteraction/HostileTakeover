@@ -18,6 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="@color/item_background"
+        android:entries="@array/list_of_games"
  />
 
 

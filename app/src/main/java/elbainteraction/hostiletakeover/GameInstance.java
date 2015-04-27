@@ -30,7 +30,7 @@ public class GameInstance implements Runnable {
     protected GameTile[][] gameTiles;
     private int numberOfTeams;
     private GoogleMap map;
-    private int userTeamColor;
+    final static int userTeamColor = Color.RED;
     private DatabaseConnection db;
 
 
@@ -90,7 +90,7 @@ public class GameInstance implements Runnable {
 
     public void changeTileTeam(LatLng userLocation) {
         GameTile gameTile = findTile(userLocation);
-        if (db.setTileTeam(gameTile)) {
+        if (!db.setTileTeam(gameTile)) {//FOR TESTING PURPOSES SET NO FALSE IN ORDER TO CHANGE TILE COLOR
             changeTileColor(gameTile, userTeamColor);
         }
 
@@ -124,14 +124,5 @@ public class GameInstance implements Runnable {
     public void run() {
     }
 
-    public void setTeamColor(String teamColor) {
-        switch (teamColor) {
-            case "RED":
-                this.userTeamColor = Color.argb(70, 254, 0, 0);
-                break;
-            case "BLUE":
-                this.userTeamColor = Color.argb(70, 0, 0, 254);
-                break;
-        }
-    }
+
 }

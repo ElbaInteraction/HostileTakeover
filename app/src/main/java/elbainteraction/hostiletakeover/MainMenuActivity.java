@@ -33,6 +33,10 @@ public class MainMenuActivity extends ActionBarActivity {
         startActivity(new Intent(view.getContext(), OptionsActivity.class));
         overridePendingTransition(0, 0);
     }
+    public void goToTutorial(View view){
+        startActivity(new Intent(view.getContext(), TutorialActivity.class));
+        overridePendingTransition(0, 0);
+    }
 
 
 

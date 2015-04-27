@@ -1,17 +1,15 @@
 package elbainteraction.hostiletakeover;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -22,7 +20,7 @@ public class CreateGameActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start_screen);
+        setContentView(R.layout.activity_create_game);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new PlaceholderFragment())
@@ -41,7 +39,7 @@ public class CreateGameActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_start_screen, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_create_game, container, false);
             return rootView;
         }
     }
@@ -52,7 +50,8 @@ public class CreateGameActivity extends ActionBarActivity {
 
         EditText editText = (EditText) findViewById(R.id.gameName);
         if(editText.getText().length()==0){
-            Toast.makeText(view.getContext(),"The game must have a name!",Toast.LENGTH_LONG).show();
+            Toast toast = Toast.makeText(view.getContext(),"The game must have a name!",Toast.LENGTH_LONG);
+            toast.show();
             editText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
 
             return;
