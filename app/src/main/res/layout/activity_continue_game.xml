@@ -17,8 +17,8 @@
         android:id="@+id/listOfActiveGames"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/item_background"
-        android:entries="@array/list_of_games"
+        android:background="@color/background_material_light"
+
  />
 
 

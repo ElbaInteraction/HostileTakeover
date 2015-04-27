@@ -1,19 +1,13 @@
 package elbainteraction.hostiletakeover;
 
-import android.app.ListActivity;
 import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.provider.ContactsContract;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 
 
@@ -22,11 +16,31 @@ public class ContinueGameActivity extends ActionBarActivity implements LoaderMan
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
 
+    //JSON handler
+    private JSONhandler jsonHandler;
+    private ListView listView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_continue_game);
+        listView = (ListView) findViewById(R.id.listOfActiveGames);
+        jsonHandler = new JSONhandler(listView, this);
+        jsonHandler.listActiveGames();
+
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                String gameName = listView.getItemAtPosition(position).toString().trim();
+                jsonHandler.getGame(gameName);
+
+            }});
     }
+
+
 
     // Called when a new Loader needs to be created
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

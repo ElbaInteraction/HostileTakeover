@@ -48,18 +48,7 @@
         <item>24</item>
     </string-array>
 
-    //PLACEHOLDER ARRAY FOR CONTINUE
-    <string-array name="list_of_games">
-        <item>Henriks Game</item>
-        <item>Filips Game</item>
-        <item>Mikaels Game</item>
-        <item>Alexanders Game</item>
-        <item>Henriks Game</item>
-        <item>Filips Game</item>
-        <item>Mikaels Game</item>
-        <item>Alexanders Game</item>
 
-    </string-array>
     <string name="title_activity_tutorial">TutorialActivity</string>
 
 
