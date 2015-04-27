@@ -7,9 +7,13 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -83,7 +87,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
 
             v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
             mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
-            progressShaker = new ProgressShaker(progressBar, v, mSensorManager, takeoverButton, (TextView)findViewById(R.id.shake_text_prompt));
+            progressShaker = new ProgressShaker(progressBar, v, mSensorManager, takeoverButton, (TextView)findViewById(R.id.shake_text_prompt), getApplicationContext());
 
 
 
@@ -108,6 +112,18 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
             firstOnResume = false;
         }
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+            startActivity(new Intent(this, MainMenuActivity.class));
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
 
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly

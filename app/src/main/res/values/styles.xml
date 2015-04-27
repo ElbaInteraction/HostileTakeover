@@ -12,7 +12,10 @@
         <item name="android:indeterminateDrawable">@android:drawable/progress_horizontal</item>
         <item name="android:minHeight">8dip</item>
         <item name="android:maxHeight">20dip</item>
+        <item name="android:colorBackground">@color/main_green</item>
+
     </style>
+
     <style name="darkSpinner" parent="android:style/Widget.Spinner" id="darkSpinner">
         <item name="android:background">@color/white</item>
         <item name="android:dropDownSelector">@color/item_background</item>

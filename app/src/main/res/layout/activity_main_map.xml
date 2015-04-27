@@ -29,6 +29,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="50dp"
@@ -42,6 +43,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,16 +58,29 @@
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/shake_text_prompt"
+        android:textAlignment="center"
+        android:gravity="center"
         android:id="@+id/shake_text_prompt"
+
+
+        android:visibility="invisible"
+        android:textSize="30sp"
+
+        android:layout_alignLeft="@id/takeOverProgress"
+        android:layout_alignTop="@id/takeOverProgress"
+        android:layout_alignRight="@id/takeOverProgress"
+        android:layout_alignBottom="@id/takeOverProgress"
+
+        />
+
+<!--android:background="@color/main_green"
+
         android:layout_above="@+id/takeOverProgress"
         android:layout_centerHorizontal="true"
-        android:visibility="invisible"
-        android:background="@color/item_background"/>
-
-
+        -->
 </RelativeLayout>
 

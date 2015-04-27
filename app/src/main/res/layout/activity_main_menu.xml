@@ -32,6 +32,7 @@
             android:layout_alignLeft="@+id/continue_game"
             android:layout_alignStart="@+id/continue_game"
             android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
             android:layout_weight="1"/>
         //TUTORIAL
         <Button
@@ -49,6 +50,7 @@
             android:layout_alignLeft="@+id/continue_game"
             android:layout_alignStart="@+id/continue_game"
             android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
             android:layout_weight="1"/>
 
 
@@ -80,6 +82,7 @@
         android:layout_height="match_parent"
         android:weightSum="2"
         android:layout_weight="1">
+
     //OPTIONS
     <Button
         android:layout_width="match_parent"
@@ -95,6 +98,7 @@
         android:layout_alignLeft="@+id/continue_game"
         android:layout_alignStart="@+id/continue_game"
         android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="false"
         android:layout_weight="1"
         />
     //LOG OUT

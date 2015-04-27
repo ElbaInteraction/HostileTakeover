@@ -8,7 +8,7 @@
 
     //String for use in MainMap
     <string name="takeOverZone">Click to start Takeover!</string>
-    <string name="shake_text_prompt">Shake to Caputre!</string>
+    <string name="shake_text_prompt">Shake to capture!</string>
     <string name="takeoverButton">Click to finish capture!</string>
 
     //Main Menu Navigation

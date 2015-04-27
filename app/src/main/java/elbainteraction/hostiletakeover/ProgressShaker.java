@@ -1,8 +1,12 @@
 package elbainteraction.hostiletakeover;
 
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Vibrator;
 
 import android.view.View;
@@ -20,7 +24,8 @@ public class ProgressShaker {
     private Button takeoverButton;
     private TextView shakeText;
 
-    public ProgressShaker(final ProgressBar progressBar, final Vibrator v, SensorManager mSensorManager, final Button takeoverButton, final TextView shakeText){
+
+    public ProgressShaker(final ProgressBar progressBar, final Vibrator v, SensorManager mSensorManager, final Button takeoverButton, final TextView shakeText, final Context context){
 
       this.takeoverButton = takeoverButton;
       this.progressBar = progressBar;
@@ -29,6 +34,7 @@ public class ProgressShaker {
 
         mSensorListener = new ShakeListener();
         mSensorListener.setOnShakeListener(new ShakeListener.OnShakeListener() {
+
 
             public void onShake() {
                 timesShaken++;
@@ -43,13 +49,19 @@ public class ProgressShaker {
                     progressShakerPause();
                     timesShaken = 0;
                     takeoverButton.setVisibility(View.VISIBLE);
-                }
 
+                    try {
+                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Ringtone r = RingtoneManager.getRingtone(context, notification);
+                        r.play();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         );
         progressShakerPause();
-
     }
 
     protected void progressShakerResume() {
@@ -68,10 +80,6 @@ public class ProgressShaker {
             progressBar.setProgress(0);
             progressShakerResume();
 
-
-
-
     }
-
 }
 

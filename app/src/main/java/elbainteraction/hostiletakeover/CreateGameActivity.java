@@ -49,13 +49,16 @@ public class CreateGameActivity extends ActionBarActivity {
         intent.putExtra("gameType", "newGame");
 
         EditText editText = (EditText) findViewById(R.id.gameName);
-        if(editText.getText().length()==0){
+        editText.getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+
+        if(editText.getText().toString().isEmpty()){
             Toast toast = Toast.makeText(view.getContext(),"The game must have a name!",Toast.LENGTH_LONG);
             toast.show();
             editText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
 
             return;
         }
+
         intent.putExtra("gameName", editText.getText().toString());
 
         Spinner temp =  (Spinner) findViewById(R.id.numberOfTeams);
@@ -66,6 +69,7 @@ public class CreateGameActivity extends ActionBarActivity {
 
         temp = (Spinner) findViewById(R.id.gameTime);
         intent.putExtra("gameTime", Integer.parseInt(temp.getSelectedItem().toString()));
+
 
         startActivity(intent);
     }
