@@ -52,6 +52,8 @@ public class JSONhandler {
 
     }
 
+    ////
+
     public void getTeams() {
 
         url = "http://elba.netai.net/getTeams.php";
