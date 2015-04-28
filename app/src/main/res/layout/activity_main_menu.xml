@@ -101,15 +101,16 @@
         android:layout_alignParentRight="false"
         android:layout_weight="1"
         />
-    //LOG OUT
+    //ENABLE VOICE
     <Button
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/log_out_button"
-        android:id="@+id/log_out"
+        android:text="@string/enable_voice_button"
+        android:id="@+id/enable_voice"
         android:background="@drawable/red_button"
         android:textColor="@color/black"
         android:textSize="20sp"
+        android:onClick="enableVoice"
 
         android:layout_below="@+id/continue_game"
         android:layout_alignRight="@+id/continue_game"
