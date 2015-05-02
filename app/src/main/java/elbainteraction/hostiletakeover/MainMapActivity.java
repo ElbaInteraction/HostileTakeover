@@ -57,7 +57,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         //If the intent comes from the new game screen.
         if(intent.getStringExtra("gameType").equals("newGame")){
             gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("gameName"),
-                    intent.getIntExtra("numberOfTeams",0), intent.getIntExtra("mapSize",10),intent.getIntExtra("gameTime",0), mMap);
+                    intent.getIntExtra("numberOfTeams",0), intent.getStringExtra("mapSize"),intent.getIntExtra("gameTime",0), mMap);
             gameInstance.initiateGame();
 
 

@@ -11,17 +11,24 @@ import java.util.List;
 
 
 public class MainMenuActivity extends ActionBarActivity {
-    private boolean voiceOn = false;
+    private boolean voiceEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
-
     }
+
+    @Override
+    protected void onResume() {
+        voiceEnabled = false;
+        super.onResume();
+    }
+
     public void goToNewGame(View view){
-        startActivity(new Intent(view.getContext(), CreateGameActivity.class));
+        Intent intent = new Intent(view.getContext(), CreateGameActivity.class);
+        intent.putExtra("voiceEnabled", voiceEnabled);
+        startActivity(intent);
         overridePendingTransition(0, 0);
 
     }
@@ -47,6 +54,7 @@ public class MainMenuActivity extends ActionBarActivity {
 
     // Create an intent that can start the Speech Recognizer activity
     private void displaySpeechRecognizer() {
+        voiceEnabled = true;
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -63,31 +71,19 @@ public class MainMenuActivity extends ActionBarActivity {
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
-            switch(spokenText){
-                case"continue":
-                case"continue game":
-                case"continue games":
-                    goToContinueGame(findViewById(R.id.main_menu_continue_game));
-                    break;
-                case"new":
-                case"new game":
-                case"new games":
-                    goToNewGame(findViewById(R.id.main_menu_new_game));
-                    break;
-                case"option":
-                case"options":
-                    goToOptions(findViewById(R.id.main_menu_options));
-                    break;
-                case"tutorial":
-                case"tutorials":
-                    goToTutorial(findViewById(R.id.main_menu_tutorial));
-                    break;
-                default:
-                    Toast.makeText(this.getBaseContext(),spokenText,Toast.LENGTH_LONG).show();
-                    break;
-
-
+            if(spokenText.contains("continue")){
+                goToContinueGame(findViewById(R.id.main_menu_continue_game));
             }
+            else if(spokenText.contains("new")){
+                goToNewGame(findViewById(R.id.main_menu_new_game));
+            }
+            else if(spokenText.contains("options")){
+                goToOptions(findViewById(R.id.main_menu_options));
+            }
+            else if(spokenText.contains("tutorial")){
+                goToTutorial(findViewById(R.id.main_menu_tutorial));
+            }
+            Toast.makeText(this.getBaseContext(),spokenText,Toast.LENGTH_LONG).show();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

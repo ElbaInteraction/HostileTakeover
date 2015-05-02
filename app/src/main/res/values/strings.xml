@@ -38,9 +38,9 @@
         <item>4</item>
     </string-array>
     <string-array name="size_of_map">
-        <item>10</item>
-        <item>20</item>
-        <item>30</item>
+        <item>SMALL</item>
+        <item>MEDIUM</item>
+        <item>LARGE</item>
     </string-array>
     <string-array name="time_of_game">
         <item>2</item>
