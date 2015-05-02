@@ -28,11 +28,6 @@
             android:textColor="@color/black"
             android:textSize="20sp"
 
-            android:layout_above="@+id/continue_game"
-            android:layout_alignLeft="@+id/continue_game"
-            android:layout_alignStart="@+id/continue_game"
-            android:layout_alignParentEnd="false"
-            android:layout_alignParentRight="false"
             android:layout_weight="1"/>
         //TUTORIAL
         <Button
@@ -46,11 +41,7 @@
             android:textColor="@color/black"
             android:textSize="20sp"
 
-            android:layout_above="@+id/continue_game"
-            android:layout_alignLeft="@+id/continue_game"
-            android:layout_alignStart="@+id/continue_game"
-            android:layout_alignParentEnd="false"
-            android:layout_alignParentRight="false"
+
             android:layout_weight="1"/>
 
 
@@ -61,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/main_menu_continue"
-        android:id="@+id/continue_game"
+        android:id="@+id/main_menu_continue_game"
         android:onClick="goToContinueGame"
         android:background="@drawable/dark_green_button"
         android:textColor="@color/black"
@@ -72,8 +63,7 @@
         android:paddingRight="50dp"
         android:gravity="center"
 
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
+
 
         />
 
@@ -88,17 +78,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/main_menu_options"
-        android:id="@+id/options"
+        android:id="@+id/main_menu_options"
         android:onClick="goToOptions"
         android:background="@drawable/yellow_button"
         android:textColor="@color/black"
         android:textSize="20sp"
 
-        android:layout_below="@+id/continue_game"
-        android:layout_alignLeft="@+id/continue_game"
-        android:layout_alignStart="@+id/continue_game"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="false"
+
         android:layout_weight="1"
         />
     //ENABLE VOICE
@@ -106,15 +92,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/enable_voice_button"
-        android:id="@+id/enable_voice"
+        android:id="@+id/main_menu_enable_voice"
         android:background="@drawable/red_button"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:onClick="enableVoice"
 
-        android:layout_below="@+id/continue_game"
-        android:layout_alignRight="@+id/continue_game"
-        android:layout_alignEnd="@+id/continue_game"
+
         android:layout_weight="1"/>
 
    </LinearLayout>

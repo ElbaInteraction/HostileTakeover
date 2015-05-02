@@ -1,15 +1,10 @@
 package elbainteraction.hostiletakeover;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.List;
@@ -68,14 +63,31 @@ public class MainMenuActivity extends ActionBarActivity {
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
-            if(spokenText.equals("new game") || spokenText.equals("new games") ||spokenText.equals("new") ){
-                goToNewGame(findViewById(R.id.main_menu_new_game));
+            switch(spokenText){
+                case"continue":
+                case"continue game":
+                case"continue games":
+                    goToContinueGame(findViewById(R.id.main_menu_continue_game));
+                    break;
+                case"new":
+                case"new game":
+                case"new games":
+                    goToNewGame(findViewById(R.id.main_menu_new_game));
+                    break;
+                case"option":
+                case"options":
+                    goToOptions(findViewById(R.id.main_menu_options));
+                    break;
+                case"tutorial":
+                case"tutorials":
+                    goToTutorial(findViewById(R.id.main_menu_tutorial));
+                    break;
+                default:
+                    Toast.makeText(this.getBaseContext(),spokenText,Toast.LENGTH_LONG).show();
+                    break;
+
+
             }
-            else if(spokenText.equals("continue game") || spokenText.equals("continue") || spokenText.equals("continue games")){
-                goToContinueGame(findViewById(R.id.main_menu_new_game));
-            }
-            Toast.makeText(this.getBaseContext(),spokenText,Toast.LENGTH_LONG).show();
-            // Do something with spokenText
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
