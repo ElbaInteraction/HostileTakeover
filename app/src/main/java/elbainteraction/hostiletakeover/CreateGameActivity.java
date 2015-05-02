@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.media.AudioAttributes;
 import android.os.Build;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
@@ -34,9 +35,10 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
                     .commit();
         }
         this.tts = new TextToSpeech(this, this);
-        this.tts.setLanguage(Locale.UK);
-        this.tts.setVoice()
-        this.tts.setSpeechRate(0.5f);
+        this.tts.setLanguage(Locale.ENGLISH);
+
+
+        this.tts.setSpeechRate(0.3f);
         say("Nu är vi igång och ska prata.");
         displaySpeechRecognizer();
     }
@@ -99,6 +101,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
     // Start the activity, the intent will be populated with the speech text
         startActivityForResult(intent, SPEECH_REQUEST_CODE);
 
@@ -118,6 +121,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
                     EditText gameName = (EditText) findViewById(R.id.gameName);
                     gameName.setText(spokenText);
                     say(spokenText);
+                    displaySpeechRecognizer();
                     break;
                 case 1:
                     Spinner numberOfTeams = (Spinner) findViewById(R.id.numberOfTeamsSpinner);
@@ -126,6 +130,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
                     if(tempIndex > 0)
                         numberOfTeams.setSelection(tempIndex);
                     say(spokenText);
+                    displaySpeechRecognizer();
                     break;
                 case 2:
                     Spinner sizeOfMap = (Spinner) findViewById(R.id.sizeOfMapSpinner);
@@ -134,6 +139,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
                     if(tempIndex > 0)
                         sizeOfMap.setSelection(tempIndex);
                     say(spokenText);
+                    displaySpeechRecognizer();
                     break;
                 case 3:
                     Spinner durationOfGame = (Spinner) findViewById(R.id.gameDurationSpinner);
@@ -142,9 +148,11 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
                     if(tempIndex > 0)
                         durationOfGame.setSelection(tempIndex);
                     say(spokenText);
+                    displaySpeechRecognizer();
                     break;
                 case 4:
-                   say("Martin is a big whore whore whore");
+                   say("ARE THESE SETTINGS OK?");
+                    displaySpeechRecognizer();
                     break;
 
             }
@@ -154,7 +162,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
 
         }
         super.onActivityResult(requestCode, resultCode, data);
-        displaySpeechRecognizer();
+
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
