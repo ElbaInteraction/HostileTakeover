@@ -6,17 +6,21 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+import android.os.Vibrator;
 
 import java.util.List;
 
 
 public class MainMenuActivity extends ActionBarActivity {
     private boolean voiceEnabled;
+    private Vibrator vibrator;
+    final static int VIBRATION_TIME = 50; //time for vibration in milliseconds.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
     }
 
     @Override
@@ -28,24 +32,29 @@ public class MainMenuActivity extends ActionBarActivity {
     public void goToNewGame(View view){
         Intent intent = new Intent(view.getContext(), CreateGameActivity.class);
         intent.putExtra("voiceEnabled", voiceEnabled);
+        vibrator.vibrate(VIBRATION_TIME);
         startActivity(intent);
         overridePendingTransition(0, 0);
 
     }
     public void goToContinueGame(View view){
+        vibrator.vibrate(VIBRATION_TIME);
         startActivity(new Intent(view.getContext(), ContinueGameActivity.class));
         overridePendingTransition(0, 0);
 
     }
     public void goToOptions(View view){
+        vibrator.vibrate(VIBRATION_TIME);
         startActivity(new Intent(view.getContext(), OptionsActivity.class));
         overridePendingTransition(0, 0);
     }
     public void goToTutorial(View view){
+        vibrator.vibrate(VIBRATION_TIME);
         startActivity(new Intent(view.getContext(), TutorialActivity.class));
         overridePendingTransition(0, 0);
     }
     public void enableVoice(View view){
+        vibrator.vibrate(VIBRATION_TIME);
         displaySpeechRecognizer();
     }
 

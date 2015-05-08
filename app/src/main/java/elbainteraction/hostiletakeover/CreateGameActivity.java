@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
+import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
@@ -25,6 +26,8 @@ import java.util.Locale;
 
 public class CreateGameActivity extends ActionBarActivity implements TextToSpeech.OnInitListener{
     private TextToSpeech tts;
+    private Vibrator vibrator;
+    final static int VIBRATION_TIME = 50; //time for vibration in milliseconds.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,8 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
     }
 
     public void createGame(View view){
+        vibrator.vibrate(VIBRATION_TIME);
+
         Intent intent = new Intent(view.getContext(), MainMapActivity.class);
         intent.putExtra("gameType", "newGame");
 
