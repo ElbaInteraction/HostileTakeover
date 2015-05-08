@@ -41,7 +41,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
         if(getIntent().getBooleanExtra("voiceEnabled",false)){
             this.tts = new TextToSpeech(this, this);
         }
-
+        vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
     }
 
     @Override
@@ -49,7 +49,6 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
         if(this.tts != null) {
             this.tts.stop();
         }
-
         super.onStop();
     }
 
@@ -60,7 +59,6 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
         this.tts.setSpeechRate(0.8f);
         this.tts.setOnUtteranceProgressListener(mProgressListener);
         say("Please specify the name of the game.");
-
     }
 
     private UtteranceProgressListener mProgressListener = new UtteranceProgressListener() {
@@ -78,8 +76,6 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
             if(currentChoice<5){
                 displaySpeechRecognizer();
             }
-
-
         }
     };
 

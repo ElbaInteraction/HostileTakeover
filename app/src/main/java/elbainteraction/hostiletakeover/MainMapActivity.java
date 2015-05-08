@@ -7,9 +7,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -39,7 +36,10 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
 
     private ProgressShaker progressShaker;
     private ProgressBar progressBar;
-    private Vibrator v;
+
+    private Vibrator vibrator;
+    private static final int VIBRATION_TIME = 50;
+
     private SensorManager mSensorManager;
     private Button takeoverButton;
     private boolean firstOnResume;
@@ -55,17 +55,16 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
 
         Intent intent = getIntent();
         //If the intent comes from the new game screen.
-        if(intent.getStringExtra("gameType").equals("newGame")){
+        if (intent.getStringExtra("gameType").equals("newGame")) {
             gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("gameName"),
-                    intent.getIntExtra("numberOfTeams",0), intent.getStringExtra("mapSize"),intent.getIntExtra("gameTime",0), mMap);
+                    intent.getIntExtra("numberOfTeams", 0), intent.getStringExtra("mapSize"), intent.getIntExtra("gameTime", 0), mMap);
             gameInstance.initiateGame();
 
 
         }
         //Else if the intent comes from the continue game screen
-        else{
-            gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("teamName"),mMap);
-
+        else {
+            gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("teamName"), mMap);
 
         }
 
@@ -85,10 +84,9 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
             progressBar = (ProgressBar) this.findViewById(R.id.takeOverProgress);
             progressBar.setMax(12);
 
-            v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
             mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
-            progressShaker = new ProgressShaker(progressBar, v, mSensorManager, takeoverButton, (TextView)findViewById(R.id.shake_text_prompt), getApplicationContext());
-
+            progressShaker = new ProgressShaker(progressBar, vibrator, mSensorManager, takeoverButton, (TextView) findViewById(R.id.shake_text_prompt), getApplicationContext());
 
 
         }
@@ -104,11 +102,9 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
-        if(!firstOnResume) {
+        if (!firstOnResume) {
             progressShaker.progressShakerResume();
-        }
-        else
-        {
+        } else {
             firstOnResume = false;
         }
     }
@@ -124,7 +120,6 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         }
         return super.onKeyDown(keyCode, event);
     }
-
 
 
     /**
@@ -166,7 +161,8 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
     }
 
     public void showProgressBar(View v) {
-        if(progressBar.getVisibility() == View.INVISIBLE && takeoverButton.getVisibility()== View.INVISIBLE){
+        if (progressBar.getVisibility() == View.INVISIBLE && takeoverButton.getVisibility() == View.INVISIBLE) {
+            vibrator.vibrate(VIBRATION_TIME);
             startTakeOverButton.setVisibility(View.INVISIBLE);
             findViewById(R.id.shake_text_prompt).setVisibility(View.VISIBLE);
             progressShaker.setBarVisible();
@@ -178,6 +174,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
     }
 
     public void takeOverZone(View v) {
+        vibrator.vibrate(VIBRATION_TIME);
         takeoverButton.setVisibility(View.INVISIBLE);
         startTakeOverButton.setVisibility(View.VISIBLE);
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
