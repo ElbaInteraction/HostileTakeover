@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
@@ -38,7 +39,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
-        if(getIntent().getBooleanExtra("voiceEnabled",false)){
+        if(getIntent().getBooleanExtra("voiceEnabled",false) || PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_always_voice),false)){
             this.tts = new TextToSpeech(this, this);
         }
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);

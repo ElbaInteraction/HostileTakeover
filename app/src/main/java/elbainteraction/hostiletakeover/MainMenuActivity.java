@@ -1,7 +1,12 @@
 package elbainteraction.hostiletakeover;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,24 +14,35 @@ import android.widget.Toast;
 import android.os.Vibrator;
 
 import java.util.List;
+import java.util.Locale;
 
 
-public class MainMenuActivity extends ActionBarActivity {
+public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.OnInitListener {
     private boolean voiceEnabled;
     private Vibrator vibrator;
     final static int VIBRATION_TIME = 50; //time for vibration in milliseconds.
+    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        tts = new TextToSpeech(this,this);
         setContentView(R.layout.activity_main_menu);
+        PreferenceManager.setDefaultValues(this,R.xml.preferences,false);
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_always_voice),false)){
+            say();
+        }
     }
 
     @Override
     protected void onResume() {
         voiceEnabled = false;
         super.onResume();
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_always_voice),false)){
+            say();
+            voiceEnabled = true;
+        }
     }
 
     public void goToNewGame(View view){
@@ -55,7 +71,7 @@ public class MainMenuActivity extends ActionBarActivity {
     }
     public void enableVoice(View view){
         vibrator.vibrate(VIBRATION_TIME);
-        displaySpeechRecognizer();
+        say();
     }
 
 
@@ -97,6 +113,32 @@ public class MainMenuActivity extends ActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+
+    @Override
+    public void onInit(int status) {
+        this.tts.setLanguage(Locale.ENGLISH);
+        this.tts.setSpeechRate(0.8f);
+        this.tts.setOnUtteranceProgressListener(mProgressListener);
+    }
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void say(){
+        tts.speak("Where do you want to navigate? Options are Continue Game, New Game, Tutorial or Options",TextToSpeech.QUEUE_FLUSH,null,"Where do you want to navigate? Options are Continue Game, New Game, Tutorial or Options");
+    }
+    private UtteranceProgressListener mProgressListener = new UtteranceProgressListener() {
+        @Override
+        public void onStart(String utteranceId) {
+        } // Do nothing
+
+        @Override
+        public void onError(String utteranceId) {
+        } // Do nothing.
+
+        //Every time reading a string is finished, accept a new voice command from the user.
+        @Override
+        public void onDone(String utteranceId) {
+                displaySpeechRecognizer();
+        }
+    };
 
 
 }

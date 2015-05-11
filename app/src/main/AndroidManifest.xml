@@ -70,7 +70,8 @@
         </activity>
         <activity
             android:name=".OptionsActivity"
-            android:label="@string/title_activity_options" >
+            android:label="@string/title_activity_options"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="elbainteraction.hostiletakeover.MainMenuActivity" />

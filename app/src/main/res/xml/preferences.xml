@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+    android:title="Visual and Graphics"
+    android:key="pref_key_visual_settings">
+    <SwitchPreference
+        android:key="@string/pref_key_colorblind"
+        android:title="Colorblind Mode"
+        android:defaultValue="false"
+        />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Interaction"
+        android:key="pref_key_interaction_settings">
+        <SwitchPreference
+            android:key="@string/pref_key_always_voice"
+            android:title="Always use voice"
+            android:defaultValue="false"
+            />
+    </PreferenceCategory>
+
+</PreferenceScreen>

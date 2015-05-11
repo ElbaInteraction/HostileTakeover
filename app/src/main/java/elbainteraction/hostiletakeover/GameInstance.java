@@ -1,6 +1,7 @@
 package elbainteraction.hostiletakeover;
 
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -30,7 +31,7 @@ public class GameInstance implements Runnable {
     protected GameTile[][] gameTiles;
     private int numberOfTeams;
     private GoogleMap map;
-    final static int userTeamColor = Color.RED;
+    private int userTeamColor = Color.RED;
     private DatabaseConnection db;
 
 
@@ -44,6 +45,8 @@ public class GameInstance implements Runnable {
         this.numberOfRows = numberOfRows;
         this.gameTiles = new GameTile[numberOfRows][numberOfRows];
         db = DatabaseConnection.getInstance(); //hämtar med singleton.
+
+
     }
 
     public void setGoogleMap(GoogleMap map) {
