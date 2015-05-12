@@ -1,14 +1,18 @@
 package elbainteraction.hostiletakeover;
 
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+
+import java.util.ArrayList;
 
 
 public class ContinueGameActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -37,6 +41,7 @@ public class ContinueGameActivity extends ActionBarActivity implements LoaderMan
                 String gameName = listView.getItemAtPosition(position).toString().trim();
                 jsonHandler.getGame(gameName);
 
+
             }});
     }
 
@@ -64,4 +69,15 @@ public class ContinueGameActivity extends ActionBarActivity implements LoaderMan
         mAdapter.swapCursor(null);
     }
 
+    public void startGame(ArrayList<String> gameParameters){
+        Intent intent = new Intent(this, MainMapActivity.class);
+        intent.putExtra("gameType", "continueGame");
+        intent.putExtra("gameName", gameParameters.get(0));
+        intent.putExtra("startLatitude", Double.parseDouble(gameParameters.get(1)));
+        intent.putExtra("startLongitude", Double.parseDouble(gameParameters.get(2)));
+        intent.putExtra("endTime", gameParameters.get(3));
+        intent.putExtra("rowCount", Integer.parseInt(gameParameters.get(4)));
+
+        startActivity(intent);
+    }
 }

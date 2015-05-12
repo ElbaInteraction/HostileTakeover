@@ -64,7 +64,10 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         }
         //Else if the intent comes from the continue game screen
         else {
-            gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("teamName"), mMap);
+            //gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("teamName"), mMap);
+
+            GameInstance gameInstance = new GameInstance(intent.getStringExtra("gameName"),intent.getDoubleExtra("startLatitude",0), intent.getDoubleExtra("startLongitude",0), 2, intent.getIntExtra("rowCount",0));
+            gameInstance.setGoogleMap(mMap);
 
         }
 

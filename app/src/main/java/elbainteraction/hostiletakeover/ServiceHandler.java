@@ -1,5 +1,7 @@
 package elbainteraction.hostiletakeover;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;

@@ -43,11 +43,10 @@ public class JSONhandler {
 
 
     public JSONhandler(ListView listView, Context context) {
+        this.context = (ContinueGameActivity) context;
         this.listView = listView;
-        this.context = context;
 
 
-        task = new JsonReadTask();
         // passes values for the urls string array
 
     }
@@ -56,12 +55,16 @@ public class JSONhandler {
 
     public void getTeams() {
 
+        task = new JsonReadTask();
+
         url = "http://elba.netai.net/getTeams.php";
 
-        task.execute(new String[]{url});
+        task.execute(new String[]{url,"getTeams"});
     }
 
     public void getGame(String gameName){
+
+        task = new JsonReadTask();
 
         url = "http://elba.netai.net/getGame.php";
 
@@ -71,9 +74,21 @@ public class JSONhandler {
 
     public void listActiveGames() {
 
+        task = new JsonReadTask();
+
         url = "http://elba.netai.net/getGames.php";
 
         task.execute(new String[]{url, "listActiveGames"});
+    }
+
+    public void getTiles(){
+
+        task = new JsonReadTask();
+
+        url = "http://elba.netai.net/getTiles.php";
+
+        task.execute(new String[]{url, "getTiles"});
+
     }
 
     private class JsonReadTask extends AsyncTask<String, Void, String> {
@@ -88,12 +103,16 @@ public class JSONhandler {
             // Creating service handler class instance
             ServiceHandler sh = new ServiceHandler();
 
-        String whatTodo = params[1];
-        if(whatTodo.equals("getGame")) {
-            getGame(sh, params[1]);
-        } else if(whatTodo.equals("listActiveGames")){
-            getGames(sh);
-        }
+            String whatTodo = params[1];
+            if (whatTodo.equals("getGame")) {
+                getGame(sh, params[2]);
+            } else if (whatTodo.equals("listActiveGames")) {
+                getGames(sh);
+            } else if (whatTodo.equals("getTeams")){
+                getTeams(sh);
+            } else if(whatTodo.equals("getTiles")){
+                getTiles(sh);
+            }
 
             return null;
         }
@@ -166,6 +185,7 @@ public class JSONhandler {
 
         public void getGame(ServiceHandler sh, String gameName) {
 
+            Log.d("gggggg", gameName);
             ArrayList<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
             nameValuePair.add(new BasicNameValuePair("gameName", gameName));
 
@@ -200,6 +220,39 @@ public class JSONhandler {
             }
         }
 
+        public void getTiles(ServiceHandler sh){
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url, ServiceHandler.GET);
+
+            Log.d("Response: ", "> " + jsonStr);
+
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+
+                    // Getting JSON Array node
+                    jsonArray = jsonObj.getJSONArray("Zones");
+                    resultList = new ArrayList<>();
+
+                    // looping through All results
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject c = jsonArray.getJSONObject(i);
+
+                        resultList.add(c.getString("teamName"));
+                        resultList.add(c.getString("row"));
+                        resultList.add(c.getString("column"));
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.e("ServiceHandler", "Couldn't get any data from the url");
+            }
+
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -225,18 +278,23 @@ public class JSONhandler {
 
 
             if(whatTodo.equals("listActiveGames")) {
+
+
                 ArrayAdapter<ArrayList<String>> arrayAdapter = new ArrayAdapter<ArrayList<String>>(
                         context,
                         android.R.layout.simple_list_item_1,
                         resultList);
 
                 listView.setAdapter(arrayAdapter);
+
             } else if(whatTodo.equals("getGame")){
 
+                //Start game with paramters in resultList
+                ((ContinueGameActivity) context).startGame(resultList);
 
+            } else if(whatTodo.equals("getTiles")){
 
-
-
+                //Handle tiles with resultList
             }
 
             }
