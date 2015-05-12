@@ -3,7 +3,9 @@ package elbainteraction.hostiletakeover;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -11,11 +13,14 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Henrik on 2015-04-09.
  */
-public class GameInstance {
+public class GameInstance extends AsyncTask {
     public static final double LUND_MAP_X_START_POINT = 55.719763;
     public static final double LUND_MAP_Y_START_POINT = 13.184195;
     public static final Team NO_TEAM = new Team(Color.TRANSPARENT, "");
@@ -37,7 +42,6 @@ public class GameInstance {
     private int userTeamColor = Color.RED;
     private DatabaseConnection db;
     private Team teams[];
-
 
     public GameInstance(String gameName, double overLayStartLat, double overlayStartLng, //Date endTime,
                         int numberOfTeams, int numberOfRows) {
@@ -72,24 +76,24 @@ public class GameInstance {
         if(PreferenceManager.getDefaultSharedPreferences(c).getBoolean(c.getString(R.string.pref_key_colorblind),false)){
         switch(numberOfTeams){
             case 4:
-                teams[3]=new Team(c.getResources().getColor(R.color.main_green),"Team4");
+                teams[3]=new Team(c.getResources().getColor(R.color.tile_green),"Team4");
             case 3:
-                teams[2]=new Team(c.getResources().getColor(R.color.main_yellow),"Team3");
+                teams[2]=new Team(c.getResources().getColor(R.color.tile_yellow),"Team3");
 
             case 2:
-                teams[1]=new Team(c.getResources().getColor(R.color.main_blue),"Team2");
+                teams[1]=new Team(c.getResources().getColor(R.color.tile_blue),"Team2");
             case 1:
-                teams[0]=new Team(c.getResources().getColor(R.color.main_red),"Team1");
+                teams[0]=new Team(c.getResources().getColor(R.color.tile_red),"Team1");
         }
             return;}
         switch(numberOfTeams){
             case 4:
                 teams[3]=new Team(c.getResources().getColor(R.color.green_alternative),"Team4");
             case 3:
-                teams[2]=new Team(c.getResources().getColor(R.color.main_yellow),"Team3");
+                teams[2]=new Team(c.getResources().getColor(R.color.tile_yellow),"Team3");
 
             case 2:
-                teams[1]=new Team(c.getResources().getColor(R.color.main_blue),"Team2");
+                teams[1]=new Team(c.getResources().getColor(R.color.tile_blue),"Team2");
             case 1:
                 teams[0]=new Team(c.getResources().getColor(R.color.red_alternative),"Team1");
         }
@@ -125,12 +129,34 @@ public class GameInstance {
 
     }
 
+    public void updateTiles(ArrayList<String> resultList){
+        for(int i=0; i<resultList.size(); i+=3){
+            switch (resultList.get(i+2)){
+                case "blue":
+                    changeTileTeam(gameTiles[Integer.parseInt(resultList.get(i))][Integer.parseInt(resultList.get(i+1))], teams[1]);
+                    break;
+                case "red":
+                    changeTileTeam(gameTiles[Integer.parseInt(resultList.get(i))][Integer.parseInt(resultList.get(i+1))], teams[0]);
+                    break;
+            }
+
+        }
+
+
+
+    }
+
     public void changeTileTeam(LatLng userLocation) {
         GameTile gameTile = findTile(userLocation);
-        if (!db.setTileTeam(gameTile)) {//FOR TESTING PURPOSES SET NO FALSE IN ORDER TO CHANGE TILE COLOR
+
             gameTile.setOwningTeam(teams[0]); // ALWAYS SETS THE OWNER TO TEAM 1.
             changeTileColor(gameTile, teams[0].teamColor);
-        }
+
+    }
+    public void changeTileTeam(GameTile gameTile, Team t) {
+            gameTile.setOwningTeam(t); // ALWAYS SETS THE OWNER TO TEAM 1.
+            changeTileColor(gameTile, t.teamColor);
+
 
     }
 
@@ -155,6 +181,27 @@ public class GameInstance {
                 .fillColor(teamColor)
                 .strokeWidth(1);
         map.addPolygon(rectangle);
+
+    }
+
+
+
+    @Override
+    protected Object doInBackground(Object[] params) {
+
+    while(true){
+            try{
+                new ZoneHandler(this).executeOnExecutor(Executors.newFixedThreadPool(2),null);
+                Thread.sleep(600000);
+
+
+            }
+            catch (Exception e){
+
+            }}
+
+
+
 
     }
 }

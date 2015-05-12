@@ -72,6 +72,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
 
         }
         gameInstance.initiateGame(this);
+        gameInstance.execute();
 
 
         String teamColor = intent.getStringExtra("teamColor");

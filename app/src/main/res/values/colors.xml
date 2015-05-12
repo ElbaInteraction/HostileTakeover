@@ -11,22 +11,26 @@
     <color name="main_red">#FFFF2300</color>
     <color name="dark_red">#FFBB1900</color>
     <color name="light_red">#FFFF5B41</color>
-    <color name="red_alternative">#d35400</color>
+    <color name="red_alternative">#66d35400</color>
+    <color name="tile_red">#66FF2300</color>
     //Yellow Palette
     <color name="main_yellow">#FFFFB700</color>
     <color name="dark_yellow">#FFBB8600</color>
     <color name="light_yellow">#FFFFC941</color>
+    <color name="tile_yellow">#66FFB700</color>
 
     //Blue Palette
     <color name="main_blue">#FF102AD0</color>
     <color name="dark_blue">#FF091A80</color>
     <color name="light_blue">#FF4B5ED5</color>
+    <color name="tile_blue">#66102AD0</color>
 
     //Green Palette
     <color name="main_green">#FF00D841</color>
     <color name="dark_green">#FF008A2A</color>
     <color name="light_green">#FF38DC6A</color>
-    <color name="green_alternative">#8e44ad</color>
+    <color name="green_alternative">#668e44ad</color>
+    <color name="tile_green">#6600D841</color>
 
 
 
