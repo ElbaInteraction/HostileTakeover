@@ -81,16 +81,6 @@ public class JSONhandler {
         task.execute(new String[]{url, "listActiveGames"});
     }
 
-    public void getTiles(){
-
-        task = new JsonReadTask();
-
-        url = "http://elba.netai.net/getTiles.php";
-
-        task.execute(new String[]{url, "getTiles"});
-
-    }
-
     private class JsonReadTask extends AsyncTask<String, Void, String> {
 
         private String whatTodo;
@@ -110,8 +100,6 @@ public class JSONhandler {
                 getGames(sh);
             } else if (whatTodo.equals("getTeams")){
                 getTeams(sh);
-            } else if(whatTodo.equals("getTiles")){
-                getTiles(sh);
             }
 
             return null;
@@ -220,38 +208,6 @@ public class JSONhandler {
             }
         }
 
-        public void getTiles(ServiceHandler sh){
-
-            // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(url, ServiceHandler.GET);
-
-            Log.d("Response: ", "> " + jsonStr);
-
-            if (jsonStr != null) {
-                try {
-                    JSONObject jsonObj = new JSONObject(jsonStr);
-
-                    // Getting JSON Array node
-                    jsonArray = jsonObj.getJSONArray("Zones");
-                    resultList = new ArrayList<>();
-
-                    // looping through All results
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject c = jsonArray.getJSONObject(i);
-
-                        resultList.add(c.getString("teamName"));
-                        resultList.add(c.getString("row"));
-                        resultList.add(c.getString("column"));
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Log.e("ServiceHandler", "Couldn't get any data from the url");
-            }
-
-        }
 
         @Override
         protected void onPreExecute() {
@@ -292,9 +248,6 @@ public class JSONhandler {
                 //Start game with paramters in resultList
                 ((ContinueGameActivity) context).startGame(resultList);
 
-            } else if(whatTodo.equals("getTiles")){
-
-                //Handle tiles with resultList
             }
 
             }
