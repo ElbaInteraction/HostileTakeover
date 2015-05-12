@@ -1,5 +1,7 @@
 package elbainteraction.hostiletakeover;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 
@@ -7,12 +9,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Created by Henrik on 2015-04-09.
  */
-public class GameInstance implements Runnable {
+public class GameInstance {
     public static final double LUND_MAP_X_START_POINT = 55.719763;
     public static final double LUND_MAP_Y_START_POINT = 13.184195;
     public static final Team NO_TEAM = new Team(Color.TRANSPARENT, "");
@@ -33,6 +36,7 @@ public class GameInstance implements Runnable {
     private GoogleMap map;
     private int userTeamColor = Color.RED;
     private DatabaseConnection db;
+    private Team teams[];
 
 
     public GameInstance(String gameName, double overLayStartLat, double overlayStartLng, //Date endTime,
@@ -42,9 +46,11 @@ public class GameInstance implements Runnable {
         this.overlayStartLng = overlayStartLng;
         this.endTime = endTime;
         this.numberOfTeams = numberOfTeams;
+        teams = new Team[4];
         this.numberOfRows = numberOfRows;
         this.gameTiles = new GameTile[numberOfRows][numberOfRows];
         db = DatabaseConnection.getInstance(); //hämtar med singleton.
+
 
 
     }
@@ -56,15 +62,42 @@ public class GameInstance implements Runnable {
     /**
      * Initiates the runnable thread to start the game  *
      */
-    public void initiateGame() {
+    public void initiateGame(Context c) {
         initiateOverlay();
-        Thread thread = new Thread(this);
-        thread.start();
+        createTeams(c);
+
 
     }
+    private void createTeams(Context c){
+        if(PreferenceManager.getDefaultSharedPreferences(c).getBoolean(c.getString(R.string.pref_key_colorblind),false)){
+        switch(numberOfTeams){
+            case 4:
+                teams[3]=new Team(c.getResources().getColor(R.color.main_green),"Team4");
+            case 3:
+                teams[2]=new Team(c.getResources().getColor(R.color.main_yellow),"Team3");
 
-    public void initiateGame(String gameName) {
-        gameTiles = db.getGameTiles();//mähä
+            case 2:
+                teams[1]=new Team(c.getResources().getColor(R.color.main_blue),"Team2");
+            case 1:
+                teams[0]=new Team(c.getResources().getColor(R.color.main_red),"Team1");
+        }return;}
+        switch(numberOfTeams){
+            case 4:
+                teams[3]=new Team(c.getResources().getColor(R.color.green_alternative),"Team4");
+            case 3:
+                teams[2]=new Team(c.getResources().getColor(R.color.main_yellow),"Team3");
+
+            case 2:
+                teams[1]=new Team(c.getResources().getColor(R.color.main_blue),"Team2");
+            case 1:
+                teams[0]=new Team(c.getResources().getColor(R.color.red_alternative),"Team1");
+        }
+    }
+
+    public void initiateGame(Context c, String gameName) {
+        initiateOverlay();
+        gameTiles = db.getGameTiles();
+        createTeams(c);//mähä
     }
 
     /**
@@ -94,7 +127,8 @@ public class GameInstance implements Runnable {
     public void changeTileTeam(LatLng userLocation) {
         GameTile gameTile = findTile(userLocation);
         if (!db.setTileTeam(gameTile)) {//FOR TESTING PURPOSES SET NO FALSE IN ORDER TO CHANGE TILE COLOR
-            changeTileColor(gameTile, userTeamColor);
+            gameTile.setOwningTeam(teams[0]); // ALWAYS SETS THE OWNER TO TEAM 1.
+            changeTileColor(gameTile, teams[0].teamColor);
         }
 
     }
@@ -122,10 +156,4 @@ public class GameInstance implements Runnable {
         map.addPolygon(rectangle);
 
     }
-
-    @Override
-    public void run() {
-    }
-
-
 }

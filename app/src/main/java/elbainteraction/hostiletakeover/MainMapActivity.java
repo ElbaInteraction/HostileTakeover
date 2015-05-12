@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -58,7 +59,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         if (intent.getStringExtra("gameType").equals("newGame")) {
             gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("gameName"),
                     intent.getIntExtra("numberOfTeams", 0), intent.getStringExtra("mapSize"), intent.getIntExtra("gameTime", 0), mMap);
-            gameInstance.initiateGame();
+            gameInstance.initiateGame(this);
 
 
         }
@@ -91,7 +92,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
             mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
             progressShaker = new ProgressShaker(progressBar, vibrator, mSensorManager, takeoverButton, (TextView) findViewById(R.id.shake_text_prompt), getApplicationContext());
 
-
+            onLocationChanged(getLocation());
         }
     }
 
@@ -183,7 +184,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String provider = service.getBestProvider(criteria, false);
-        Location location = service.getLastKnownLocation(provider);
+        Location location = getLocation();
         if (location != null) {
             LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
             gameInstance.changeTileTeam(userLocation);
@@ -217,5 +218,68 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
 
     }
 
+
+    public Location getLocation() {
+        boolean isGPSEnabled;
+        boolean isNetworkEnabled;
+        Location location = null;
+        try {
+            locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+
+            // getting GPS status
+            isGPSEnabled = locationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            // getting network status
+            isNetworkEnabled = locationManager
+                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                // no network provider is enabled
+            } else {
+
+                double latitude;
+                double longitude;
+                if (isNetworkEnabled) {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            MIN_TIME,
+                            MIN_DISTANCE, this);
+                    Log.d("Network", "Network Enabled");
+                    if (locationManager != null) {
+                        location = locationManager
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        if (location != null) {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                        }
+                    }
+                }
+                // if GPS Enabled get lat/long using GPS Services
+                if (isGPSEnabled) {
+                    if (location == null) {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER,
+                                MIN_TIME,
+                                MIN_DISTANCE, this);
+                        Log.d("GPS", "GPS Enabled");
+                        if (locationManager != null) {
+                            location = locationManager
+                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if (location != null) {
+                                latitude = location.getLatitude();
+                                longitude = location.getLongitude();
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return location;
+    }
 
 }

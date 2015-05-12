@@ -30,9 +30,7 @@ public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.
         setContentView(R.layout.activity_main_menu);
         PreferenceManager.setDefaultValues(this,R.xml.preferences,false);
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
-        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_always_voice),false)){
-            say();
-        }
+
     }
 
     @Override
@@ -43,6 +41,14 @@ public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.
             say();
             voiceEnabled = true;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        if(this.tts != null) {
+            this.tts.stop();
+        }
+        super.onStop();
     }
 
     public void goToNewGame(View view){
@@ -119,6 +125,10 @@ public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.
         this.tts.setLanguage(Locale.ENGLISH);
         this.tts.setSpeechRate(0.8f);
         this.tts.setOnUtteranceProgressListener(mProgressListener);
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_always_voice),false)){
+            say();
+        }
+
     }
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void say(){
