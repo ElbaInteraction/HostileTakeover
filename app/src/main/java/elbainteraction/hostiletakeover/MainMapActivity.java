@@ -32,8 +32,8 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GameInstance gameInstance;
     private LocationManager locationManager;
-    private static final long MIN_TIME = 0;
-    private static final float MIN_DISTANCE = 0;
+    private static final long MIN_TIME = 40;
+    private static final float MIN_DISTANCE = 40;
 
     private ProgressShaker progressShaker;
     private ProgressBar progressBar;
@@ -59,18 +59,19 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         if (intent.getStringExtra("gameType").equals("newGame")) {
             gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("gameName"),
                     intent.getIntExtra("numberOfTeams", 0), intent.getStringExtra("mapSize"), intent.getIntExtra("gameTime", 0), mMap);
-            gameInstance.initiateGame(this);
-
 
         }
         //Else if the intent comes from the continue game screen
         else {
             //gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("teamName"), mMap);
 
-            GameInstance gameInstance = new GameInstance(intent.getStringExtra("gameName"),intent.getDoubleExtra("startLatitude",0), intent.getDoubleExtra("startLongitude",0), 2, intent.getIntExtra("rowCount",0));
+            gameInstance = new GameInstance(intent.getStringExtra("gameName"),intent.getDoubleExtra("startLatitude",0),
+                    intent.getDoubleExtra("startLongitude",0), 2, intent.getIntExtra("rowCount",0));
             gameInstance.setGoogleMap(mMap);
 
+
         }
+        gameInstance.initiateGame(this);
 
 
         String teamColor = intent.getStringExtra("teamColor");

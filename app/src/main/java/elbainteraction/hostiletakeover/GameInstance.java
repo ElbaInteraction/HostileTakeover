@@ -80,7 +80,8 @@ public class GameInstance {
                 teams[1]=new Team(c.getResources().getColor(R.color.main_blue),"Team2");
             case 1:
                 teams[0]=new Team(c.getResources().getColor(R.color.main_red),"Team1");
-        }return;}
+        }
+            return;}
         switch(numberOfTeams){
             case 4:
                 teams[3]=new Team(c.getResources().getColor(R.color.green_alternative),"Team4");

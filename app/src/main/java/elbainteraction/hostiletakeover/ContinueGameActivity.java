@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -77,7 +78,8 @@ public class ContinueGameActivity extends ActionBarActivity implements LoaderMan
         intent.putExtra("startLongitude", Double.parseDouble(gameParameters.get(2)));
         intent.putExtra("endTime", gameParameters.get(3));
         intent.putExtra("rowCount", Integer.parseInt(gameParameters.get(4)));
-
+        String debug = Integer.parseInt(gameParameters.get(4)) +"";
+        Log.d("Rowcount debug: ", debug);
         startActivity(intent);
     }
 }

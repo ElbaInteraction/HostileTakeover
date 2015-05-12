@@ -1,5 +1,7 @@
 package elbainteraction.hostiletakeover;
 
+import android.widget.ListView;
+
 import com.google.android.gms.games.Game;
 import com.google.android.gms.maps.GoogleMap;
 
@@ -19,6 +21,7 @@ public class GameInstanceFactory {
     }
 
     public GameInstance createGameInsteance(String gameName,GoogleMap map){
+
         GameInstance gameInstance = db.getGame(gameName);
         gameInstance.setGoogleMap(map);
         return gameInstance;
