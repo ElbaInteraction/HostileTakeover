@@ -173,15 +173,11 @@ public class JSONhandler {
 
         public void getGame(ServiceHandler sh, String gameName) {
 
-            Log.d("gggggg", gameName);
             ArrayList<NameValuePair> nameValuePair = new ArrayList<>();
             nameValuePair.add(new BasicNameValuePair("gameName", gameName));
 
             // Making a request to url and getting response
             String jsonStr = sh.makeServiceCall(url, ServiceHandler.POST, nameValuePair);
-
-            Log.d("Response: ", "> " + jsonStr);
-
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);

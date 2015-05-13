@@ -39,9 +39,12 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+        //If the user has set up to always use voice, or the intent comes from the Enable Voice button, start the text to speech and voice interaction.
         if(getIntent().getBooleanExtra("voiceEnabled",false) || PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_always_voice),false)){
             this.tts = new TextToSpeech(this, this);
         }
+
+        //Initiate the vibrator for buttonclicks.
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
     }
 
@@ -62,6 +65,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
         say("Please specify the name of the game.");
     }
 
+    //A listener to see when the TTS is done speaking. To create the back and forth voice communication.
     private UtteranceProgressListener mProgressListener = new UtteranceProgressListener() {
         @Override
         public void onStart(String utteranceId) {
@@ -96,6 +100,9 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
         }
     }
 
+    /** Get all the information from the spinners and textfields, and adds then to the intent.
+     * The intent leads to the MainMapActivity where the main game is played.
+    */
     public void createGame(View view){
         vibrator.vibrate(VIBRATION_TIME);
 
@@ -143,7 +150,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
 
     }
 
-
+    //Strings with the different options avaliable to the user. Used for voice communication.
     private final static String ERROR_UNDERSTANDING_INPUT = "Sorry i did not quite catch that. Could you please repeat?";
     private final static String TEAM_CHOICES = ". Please specify the number of teams. Choices are: 2, 3 or 4 teams. ";
     private final static String MAP_SIZE_CHOICES = ". Please specify the size of the map. Choices are: SMALL, MEDIUM or LARGE. ";
@@ -285,6 +292,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
     private void say(String say){
         tts.speak(say,TextToSpeech.QUEUE_FLUSH,null,say);
     }
+
     //Method for filtering some of the common misheard numbers.
     private String numberFilter(String spokenText){
         switch (spokenText){

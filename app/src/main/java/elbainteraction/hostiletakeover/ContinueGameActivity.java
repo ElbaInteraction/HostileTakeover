@@ -31,21 +31,24 @@ public class ContinueGameActivity extends ActionBarActivity implements LoaderMan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_continue_game);
         listView = (ListView) findViewById(R.id.listOfActiveGames);
+
+        //Initate the handler to get the games from the database
         jsonHandler = new JSONhandler(listView, this);
         jsonHandler.listActiveGames();
 
-
-
+        //Set up the click listener, listening to button presses on items in the game list.
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 String gameName = listView.getItemAtPosition(position).toString().trim();
+                //Get the information about the game with the name selected by the buttonClick.
                 jsonHandler.getGame(gameName);
-
 
             }});
     }
+
+
 
 
 
@@ -71,6 +74,7 @@ public class ContinueGameActivity extends ActionBarActivity implements LoaderMan
         mAdapter.swapCursor(null);
     }
 
+    //Creates an intent with parameters loaded from the database. Jumps to the MainMapActivity were the main game is played.
     public void startGame(ArrayList<String> gameParameters){
         Intent intent = new Intent(this, MainMapActivity.class);
         intent.putExtra("gameType", "continueGame");
@@ -84,5 +88,6 @@ public class ContinueGameActivity extends ActionBarActivity implements LoaderMan
         String debug = Integer.parseInt(gameParameters.get(4)) +"";
         Log.d("Rowcount debug: ", debug);
         startActivity(intent);
+        this.finish();
     }
 }

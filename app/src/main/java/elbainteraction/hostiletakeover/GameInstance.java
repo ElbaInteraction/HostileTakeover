@@ -3,7 +3,10 @@ package elbainteraction.hostiletakeover;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -11,19 +14,22 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * Created by Henrik on 2015-04-09.
  */
-public class GameInstance extends AsyncTask {
+public class GameInstance{
     public static final double LUND_MAP_X_START_POINT = 55.719763;
     public static final double LUND_MAP_Y_START_POINT = 13.184195;
     public static final Team NO_TEAM = new Team(Color.TRANSPARENT, "");
+    public static final int TILE_BORDER_STROKE_WIDTH = 2;
 
-    public static final double overlayWidth = 0.005;
-    public final static double overlayHeight = 0.003;
+    public static final double overlayWidth = 0.0005;
+    public final static double overlayHeight = 0.0003;
 
     private int numberOfRows;
 
@@ -36,7 +42,6 @@ public class GameInstance extends AsyncTask {
     protected GameTile[][] gameTiles;
     private int numberOfTeams;
     private GoogleMap map;
-    private DatabaseConnection db;
     private Team teams[];
     private ExecutorService es;
     private Team currentTeam;
@@ -51,7 +56,6 @@ public class GameInstance extends AsyncTask {
         teams = new Team[4];
         this.numberOfRows = numberOfRows;
         this.gameTiles = new GameTile[numberOfRows][numberOfRows];
-        db = DatabaseConnection.getInstance(); //hämtar med singleton.
         es = Executors.newFixedThreadPool(3);
         currentTeam = teams[0];
 
@@ -71,37 +75,21 @@ public class GameInstance extends AsyncTask {
 
     }
     private void createTeams(Context c){
-        if(PreferenceManager.getDefaultSharedPreferences(c).getBoolean(c.getString(R.string.pref_key_colorblind),false)){
-        switch(numberOfTeams){
-            case 4:
-                teams[3]=new Team(c.getResources().getColor(R.color.tile_green),"green");
-            case 3:
-                teams[2]=new Team(c.getResources().getColor(R.color.tile_yellow),"yellow");
+        if(!PreferenceManager.getDefaultSharedPreferences(c).getBoolean(c.getString(R.string.pref_key_colorblind),false)) {
+            teams[3] = new Team(c.getResources().getColor(R.color.tile_green), "green");
+            teams[2] = new Team(c.getResources().getColor(R.color.tile_yellow), "yellow");
+            teams[1] = new Team(c.getResources().getColor(R.color.tile_blue), "blue");
+            teams[0] = new Team(c.getResources().getColor(R.color.tile_red), "red");
 
-            case 2:
-                teams[1]=new Team(c.getResources().getColor(R.color.tile_blue),"blue");
-            case 1:
-                teams[0]=new Team(c.getResources().getColor(R.color.tile_red),"red");
+        }else{
+
+                teams[3] = new Team(c.getResources().getColor(R.color.green_alternative), "green");
+                teams[2] = new Team(c.getResources().getColor(R.color.tile_yellow), "yellow");
+                teams[1] = new Team(c.getResources().getColor(R.color.tile_blue), "blue");
+                teams[0] = new Team(c.getResources().getColor(R.color.red_alternative), "red");
+            }
         }
-            return;}
-        switch(numberOfTeams){
-            case 4:
-                teams[3]=new Team(c.getResources().getColor(R.color.green_alternative),"green");
-            case 3:
-                teams[2]=new Team(c.getResources().getColor(R.color.tile_yellow),"yellow");
 
-            case 2:
-                teams[1]=new Team(c.getResources().getColor(R.color.tile_blue),"blue");
-            case 1:
-                teams[0]=new Team(c.getResources().getColor(R.color.red_alternative),"red");
-        }
-    }
-
-    public void initiateGame(Context c, String gameName) {
-        initiateOverlay();
-        gameTiles = db.getGameTiles();
-        createTeams(c);//mähä
-    }
 
     /**
      * Method for initiating the square tiles dividing the map in different zones.  *
@@ -119,7 +107,7 @@ public class GameInstance extends AsyncTask {
                         new LatLng(overlayStartLat - overlayHeight * (i + 1), overlayStartLng + overlayWidth * (j + 1)),
                         new LatLng(overlayStartLat - overlayHeight * i, overlayStartLng + overlayWidth * (j + 1)))
                         .fillColor(Color.TRANSPARENT)
-                        .strokeWidth(1);
+                        .strokeWidth(TILE_BORDER_STROKE_WIDTH);
                 gameTiles[i][j].setPolygon(map.addPolygon(rectangle));
             }
 
@@ -150,12 +138,16 @@ public class GameInstance extends AsyncTask {
 
     }
 
-    public void changeTileTeam(LatLng userLocation) {
+    public boolean changeTileTeam(LatLng userLocation) {
             GameTile gameTile = findTile(userLocation);
-            int response[] =findTileIndex(userLocation);
-            new PushTiles(response[0], response[1], currentTeam).executeOnExecutor(es,null);
-            gameTile.setOwningTeam(currentTeam); // ALWAYS SETS THE OWNER TO TEAM 1.
-            changeTileColor(gameTile, currentTeam.teamColor);
+            if(gameTile!=null){
+                int response[] =findTileIndex(userLocation);
+                new PushTiles(response[0], response[1], currentTeam).executeOnExecutor(es,null);
+                gameTile.setOwningTeam(currentTeam);
+                changeTileColor(gameTile, currentTeam.teamColor);
+                return true;
+            }
+        return false;
 
     }
     public void changeTileTeam(GameTile gameTile, Team t) {
@@ -176,7 +168,7 @@ public class GameInstance extends AsyncTask {
         return null;
     }
 
-    private GameTile findTile(LatLng userLocation) {
+    public GameTile findTile(LatLng userLocation) {
         for (int i = 0; i < numberOfRows; i++) {
             for (int j = 0; j < numberOfRows; j++) {
                 if (gameTiles[i][j].locationInTile(userLocation)) {
@@ -195,29 +187,8 @@ public class GameInstance extends AsyncTask {
                 new LatLng(gameTile.getLat() - gameTile.getHeight(), gameTile.getLng() + gameTile.getWidth()),
                 new LatLng(gameTile.getLat(), gameTile.getLng() + gameTile.getWidth()))
                 .fillColor(teamColor)
-                .strokeWidth(1);
+                .strokeWidth(TILE_BORDER_STROKE_WIDTH);
         gameTile.setPolygon(map.addPolygon(rectangle));
-
-
-    }
-
-
-
-    @Override
-    protected Object doInBackground(Object[] params) {
-
-    while(true){
-            try{
-                new UpdateTiles(this).executeOnExecutor(es, null);
-                Thread.sleep(10000);
-
-
-            }
-            catch (Exception e){
-
-            }}
-
-
 
 
     }
@@ -243,4 +214,7 @@ public class GameInstance extends AsyncTask {
 
         }
     }
+
+
+
 }

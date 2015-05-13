@@ -43,10 +43,8 @@ public class PushTiles extends AsyncTask<String,Void,String> {
         nameValuePair.add(new BasicNameValuePair("gameColumn", gameColumn+""));
         nameValuePair.add(new BasicNameValuePair("teamName", team.getTeamName()));
 
-        Log.d("llllllll", nameValuePair.toString());
         // Making a request to url and getting response
         String jsonStr = sh.makeServiceCall(url, ServiceHandler.POST, nameValuePair);
-        Log.d("llllllll", jsonStr);
 
         return null;
 

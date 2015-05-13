@@ -18,10 +18,26 @@ import java.util.Locale;
 
 
 public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.OnInitListener {
+    final static int VIBRATION_TIME = 50; //time for vibration in milliseconds.
+    private static final int SPEECH_REQUEST_CODE = 0;
     private boolean voiceEnabled;
     private Vibrator vibrator;
-    final static int VIBRATION_TIME = 50; //time for vibration in milliseconds.
     private TextToSpeech tts;
+    private UtteranceProgressListener mProgressListener = new UtteranceProgressListener() {
+        @Override
+        public void onStart(String utteranceId) {
+        } // Do nothing
+
+        @Override
+        public void onError(String utteranceId) {
+        } // Do nothing.
+
+        //Every time reading a string is finished, accept a new voice command from the user.
+        @Override
+        public void onDone(String utteranceId) {
+                displaySpeechRecognizer();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,42 +75,47 @@ public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.
         overridePendingTransition(0, 0);
 
     }
+
+    /**Start the intent to to go the continue menu*/
     public void goToContinueGame(View view){
         vibrator.vibrate(VIBRATION_TIME);
         startActivity(new Intent(view.getContext(), ContinueGameActivity.class));
         overridePendingTransition(0, 0);
 
     }
+
+    /**Start the intent to to go the options menu*/
     public void goToOptions(View view){
         vibrator.vibrate(VIBRATION_TIME);
         startActivity(new Intent(view.getContext(), OptionsActivity.class));
         overridePendingTransition(0, 0);
     }
+
+    /**Start the intent to to go the tutorial menu*/
     public void goToTutorial(View view){
         vibrator.vibrate(VIBRATION_TIME);
         startActivity(new Intent(view.getContext(), TutorialActivity.class));
         overridePendingTransition(0, 0);
     }
+
+    /**If the enable voice button is pressed, start the vocie communication*/
     public void enableVoice(View view){
         vibrator.vibrate(VIBRATION_TIME);
         say();
     }
 
-
-    private static final int SPEECH_REQUEST_CODE = 0;
-
-    // Create an intent that can start the Speech Recognizer activity
+    /** Create an intent that can start the Speech Recognizer activity*/
     private void displaySpeechRecognizer() {
         voiceEnabled = true;
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-// Start the activity, the intent will be populated with the speech text
+        // Start the activity, the intent will be populated with the speech text
         startActivityForResult(intent, SPEECH_REQUEST_CODE);
     }
 
-    // This callback is invoked when the Speech Recognizer returns.
-// This is where you process the intent and extract the speech text from the intent.
+    /** This callback is invoked when the Speech Recognizer returns.
+    * This is where you process the intent and extract the speech text from the intent.*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
@@ -119,7 +140,6 @@ public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
     @Override
     public void onInit(int status) {
         this.tts.setLanguage(Locale.ENGLISH);
@@ -130,25 +150,11 @@ public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.
         }
 
     }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void say(){
         tts.speak("Where do you want to navigate? Options are Continue Game, New Game, Tutorial or Options",TextToSpeech.QUEUE_FLUSH,null,"Where do you want to navigate? Options are Continue Game, New Game, Tutorial or Options");
     }
-    private UtteranceProgressListener mProgressListener = new UtteranceProgressListener() {
-        @Override
-        public void onStart(String utteranceId) {
-        } // Do nothing
-
-        @Override
-        public void onError(String utteranceId) {
-        } // Do nothing.
-
-        //Every time reading a string is finished, accept a new voice command from the user.
-        @Override
-        public void onDone(String utteranceId) {
-                displaySpeechRecognizer();
-        }
-    };
 
 
 }

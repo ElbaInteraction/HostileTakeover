@@ -7,6 +7,8 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -26,26 +28,32 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 public class MainMapActivity extends FragmentActivity implements LocationListener {
 
+    private static final long MIN_TIME = 40;
+    private static final float MIN_DISTANCE = 40;
+    private static final int VIBRATION_TIME = 50;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private GameInstance gameInstance;
     private LocationManager locationManager;
-    private static final long MIN_TIME = 40;
-    private static final float MIN_DISTANCE = 40;
-
     private ProgressShaker progressShaker;
     private ProgressBar progressBar;
-
     private Vibrator vibrator;
-    private static final int VIBRATION_TIME = 50;
-
     private SensorManager mSensorManager;
     private Button takeoverButton;
     private boolean firstOnResume;
     private Button startTakeOverButton;
+    private MediaPlayer takeOverSound;
 
+
+    //Methods related to te activity
+    /**Creates the game. If the intent comes from new game, set up a new game. If the intent comes from the continue game screen, use the parameters provided from the intent (loaded from the database).
+     * Also initiates the map, the shakelisteners for taking over a tile, the sound for taking over a tile .
+     * Lastly inititates the game and downloads the tiles from the database.*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,13 +61,19 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         setContentView(R.layout.activity_main_map);
         setUpMapIfNeeded();
         GameInstanceFactory gameInstanceFactory = new GameInstanceFactory();
+        takeOverSound =  MediaPlayer.create(this,R.raw.trumpet_takeover);
 
         Intent intent = getIntent();
         //If the intent comes from the new game screen.
         if (intent.getStringExtra("gameType").equals("newGame")) {
+            Location location = getLocation();
+            //If a location can be found.
+            if (location != null) {
+                LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
             gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("gameName"),
-                    intent.getIntExtra("numberOfTeams", 0), intent.getStringExtra("mapSize"), intent.getIntExtra("gameTime", 0), mMap);
+                    intent.getIntExtra("numberOfTeams", 0),location.getLatitude(),location.getLongitude(), intent.getStringExtra("mapSize"), intent.getIntExtra("gameTime", 0), mMap);
             gameInstance.initiateGame(this);
+            gameInstance.setTeamColor("red");}
 
         }
         //Else if the intent comes from the continue game screen
@@ -74,11 +88,18 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
 
 
         }
+        //Creates a handler that periodically checks for database updates.
+        final Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            public void run() {
+                new UpdateTiles(gameInstance).executeOnExecutor(Executors.newFixedThreadPool(2),null);
+                handler.postDelayed(this, 10000);
+            }
+        };
+        handler.post(r);
 
-        gameInstance.execute();
 
 
-        String teamColor = intent.getStringExtra("teamColor");
         if (mMap != null) {
             mMap.setMyLocationEnabled(true);
             mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
@@ -97,7 +118,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
             mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
             progressShaker = new ProgressShaker(progressBar, vibrator, mSensorManager, takeoverButton, (TextView) findViewById(R.id.shake_text_prompt), getApplicationContext());
 
-            onLocationChanged(getLocation());
+            centerCamera(getLocation());
         }
     }
 
@@ -118,19 +139,23 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         }
     }
 
-    //hej
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             finish();
             startActivity(new Intent(this, MainMenuActivity.class));
+            this.finish();
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
+    /*Methods related to setting up the map.*/
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
@@ -169,61 +194,72 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
+    /*Methods used for taking over a zone*/
+    /**Shows the progress bar that is otherwise invisible in the UI.
+     * This happends when the Take Over Zone button is pressed to inititate the takeover.*/
     public void showProgressBar(View v) {
-        if (progressBar.getVisibility() == View.INVISIBLE && takeoverButton.getVisibility() == View.INVISIBLE) {
-            vibrator.vibrate(VIBRATION_TIME);
-            startTakeOverButton.setVisibility(View.INVISIBLE);
-            findViewById(R.id.shake_text_prompt).setVisibility(View.VISIBLE);
-            progressShaker.setBarVisible();
-            progressShaker.progressShakerResume();
+        Location location = getLocation();
+        //If a location can be found.
+        if (location != null) {
+            LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+            if (progressBar.getVisibility() == View.INVISIBLE && takeoverButton.getVisibility() == View.INVISIBLE){
+                if(gameInstance.findTile(userLocation)!= null) {
+                    vibrator.vibrate(VIBRATION_TIME);
+                    startTakeOverButton.setVisibility(View.INVISIBLE);
+                    findViewById(R.id.shake_text_prompt).setVisibility(View.VISIBLE);
+                    progressShaker.setBarVisible();
+                    progressShaker.progressShakerResume();
 
-        }
-
+                }
+                else{
+                    Toast.makeText(this,"Outside tile boundaries! No tile to capture.",Toast.LENGTH_LONG);}
+            }
+    }
 
     }
 
+    /**Method for taking over a zone. Triggered when the shake is done and the Finish Takeover button is pressed.
+     * Hides Finish Takeover button, shows the Start Takeover Button.
+     * If a current location can be found, the game is told to change the current owner of the tile and update the database.
+     * Plays a sound when capture is successfull.*/
     public void takeOverZone(View v) {
         vibrator.vibrate(VIBRATION_TIME);
         takeoverButton.setVisibility(View.INVISIBLE);
         startTakeOverButton.setVisibility(View.VISIBLE);
-        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String provider = service.getBestProvider(criteria, false);
+
         Location location = getLocation();
+        //If a location can be found.
         if (location != null) {
             LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-            gameInstance.changeTileTeam(userLocation);
+
+            if(gameInstance.changeTileTeam(userLocation)){
+                takeOverSound.start();
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "Outside tile boundaries! No tile captured.",
+                        Toast.LENGTH_LONG).show();
+            }
+
+        //If a location cannot be found.
         } else {
             Toast.makeText(getApplicationContext(), "Error recieving location from Google!",
                     Toast.LENGTH_LONG).show();
         }
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
-        mMap.animateCamera(cameraUpdate);
-        locationManager.removeUpdates(this);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
     }
 
 
+    /**Method for centering the camera on the users current location. Used when a game is set up or joined.*/
+    private void centerCamera(Location location){
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+            mMap.animateCamera(cameraUpdate);
+            locationManager.removeUpdates(this);
+
+    }
+
+    /**Provides an accurate location for the user. Uses GPS or Network provider to find the best location.
+     *  Much more reliable than the googlemaps lastKnownLocation. But also less battery and data efficient.
+     * */
     public Location getLocation() {
         boolean isGPSEnabled;
         boolean isNetworkEnabled;
@@ -286,5 +322,26 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
 
         return location;
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
 
 }

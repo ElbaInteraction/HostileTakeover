@@ -28,44 +28,27 @@ public class GameTile {
         return oldOwningTeam;
     }
 
+    /*Checks if the location parameter is within the boundaries of the tile.*/
     public boolean locationInTile(LatLng location) {
         if (location.latitude <= lat && location.latitude > lat - height) {
             if (location.longitude >= lng && location.longitude < lng + width)
-
                 return true;
         }
         return false;
     }
 
-    public double getLat() {
+    public double getLat() { return lat;}
 
-        return lat;
-    }
+    public double getLng() { return lng;}
 
-    public double getLng() {
+    public double getHeight() { return height;}
 
-        return lng;
-    }
+    public double getWidth() {return width;}
 
-    public double getHeight() {
-
-        return height;
-    }
-
-    public double getWidth() {
-
-        return width;
-    }
-    public Team getTeam(){
-        return owningTeam;
-    }
-    public Polygon getPolygon(){
-        return polygon;
-    }
+    //If the tile has a polygon painted, remove it and then add the new polygon to the object.
     public Polygon setPolygon(Polygon polygon){
-        if(this.polygon != null){
-            this.polygon.remove();
-        }
+        if(this.polygon != null)this.polygon.remove();
+
         this.polygon = polygon;
         return polygon;
     }
