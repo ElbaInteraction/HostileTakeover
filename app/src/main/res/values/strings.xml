@@ -47,6 +47,12 @@
         <item>10</item>
         <item>24</item>
     </string-array>
+    <string-array name="team_colors">
+        <item>Red</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Yellow</item>
+    </string-array>
 
 
     <string name="title_activity_tutorial">TutorialActivity</string>

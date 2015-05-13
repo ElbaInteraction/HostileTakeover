@@ -59,6 +59,7 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
         if (intent.getStringExtra("gameType").equals("newGame")) {
             gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("gameName"),
                     intent.getIntExtra("numberOfTeams", 0), intent.getStringExtra("mapSize"), intent.getIntExtra("gameTime", 0), mMap);
+            gameInstance.initiateGame(this);
 
         }
         //Else if the intent comes from the continue game screen
@@ -66,12 +67,14 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
             //gameInstance = gameInstanceFactory.createGameInsteance(intent.getStringExtra("teamName"), mMap);
 
             gameInstance = new GameInstance(intent.getStringExtra("gameName"),intent.getDoubleExtra("startLatitude",0),
-                    intent.getDoubleExtra("startLongitude",0), 2, intent.getIntExtra("rowCount",0));
+                    intent.getDoubleExtra("startLongitude",0), 4, intent.getIntExtra("rowCount",0));
             gameInstance.setGoogleMap(mMap);
+            gameInstance.initiateGame(this);
+            gameInstance.setTeamColor(intent.getStringExtra("teamColor"));
 
 
         }
-        gameInstance.initiateGame(this);
+
         gameInstance.execute();
 
 

@@ -12,13 +12,13 @@ import java.util.ArrayList;
 /**
  * Created by Filip on 2015-05-12.
  */
-public class ZoneHandler extends AsyncTask<String,Void,String> {
+public class UpdateTiles extends AsyncTask<String,Void,String> {
 
     private static final long sleepTime = 20000;
     private ArrayList<String> resultList;
     private GameInstance gameInstance;
 
-    public ZoneHandler(GameInstance gameInstance){
+    public UpdateTiles(GameInstance gameInstance){
         resultList = new ArrayList<>();
         this.gameInstance = gameInstance;
     }
@@ -32,7 +32,7 @@ public class ZoneHandler extends AsyncTask<String,Void,String> {
 
     @Override
     protected String doInBackground(String... params) {
-        // Creating service handler class instance
+// Creating service handler class instance
         ServiceHandler sh = new ServiceHandler();
 
         //PHP script
@@ -40,6 +40,7 @@ public class ZoneHandler extends AsyncTask<String,Void,String> {
 
         // Making a request to url and getting response
         String jsonStr = sh.makeServiceCall(url, ServiceHandler.GET);
+
 
         Log.d("Response: ", "> " + jsonStr);
 
@@ -68,6 +69,8 @@ public class ZoneHandler extends AsyncTask<String,Void,String> {
         }
         return null;
     }
+
+
 
     @Override
     protected void onPostExecute(String o) {

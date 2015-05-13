@@ -1,6 +1,8 @@
 package elbainteraction.hostiletakeover;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polygon;
 
 /**
  * Object for storing data about a specific tile on the map. Specifies parameters like tile location, size and current owning team.
@@ -8,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class GameTile {
     private double lat, lng, height, width;
     private Team owningTeam;
+    private Polygon polygon;
 
     public GameTile(double lat, double lng, double height, double width, Team owningTeam) {
         this.lat = lat;
@@ -15,6 +18,7 @@ public class GameTile {
         this.height = height;
         this.width = width;
         this.owningTeam = owningTeam;
+        this.polygon = null;
     }
 
     /*Sets a new owning team for the tile. Returns the old owner of the tile.*/
@@ -54,5 +58,15 @@ public class GameTile {
     }
     public Team getTeam(){
         return owningTeam;
+    }
+    public Polygon getPolygon(){
+        return polygon;
+    }
+    public Polygon setPolygon(Polygon polygon){
+        if(this.polygon != null){
+            this.polygon.remove();
+        }
+        this.polygon = polygon;
+        return polygon;
     }
 }

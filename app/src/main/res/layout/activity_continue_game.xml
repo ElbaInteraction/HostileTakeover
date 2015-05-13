@@ -10,10 +10,21 @@
     android:background="@color/background">
 
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/teamColorSpinner"
+        android:layout_gravity="center_horizontal"
+        android:entries="@array/team_colors"
+        android:textColor="@color/white"
+        style="@style/darkSpinner"
+        android:layout_marginBottom="20dp"
+        />
+
 
     <ListView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:id="@+id/listOfActiveGames"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"

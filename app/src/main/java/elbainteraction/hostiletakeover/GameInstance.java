@@ -1,11 +1,9 @@
 package elbainteraction.hostiletakeover;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Henrik on 2015-04-09.
@@ -39,9 +36,10 @@ public class GameInstance extends AsyncTask {
     protected GameTile[][] gameTiles;
     private int numberOfTeams;
     private GoogleMap map;
-    private int userTeamColor = Color.RED;
     private DatabaseConnection db;
     private Team teams[];
+    private ExecutorService es;
+    private Team currentTeam;
 
     public GameInstance(String gameName, double overLayStartLat, double overlayStartLng, //Date endTime,
                         int numberOfTeams, int numberOfRows) {
@@ -54,8 +52,8 @@ public class GameInstance extends AsyncTask {
         this.numberOfRows = numberOfRows;
         this.gameTiles = new GameTile[numberOfRows][numberOfRows];
         db = DatabaseConnection.getInstance(); //hämtar med singleton.
-
-
+        es = Executors.newFixedThreadPool(3);
+        currentTeam = teams[0];
 
     }
 
@@ -76,26 +74,26 @@ public class GameInstance extends AsyncTask {
         if(PreferenceManager.getDefaultSharedPreferences(c).getBoolean(c.getString(R.string.pref_key_colorblind),false)){
         switch(numberOfTeams){
             case 4:
-                teams[3]=new Team(c.getResources().getColor(R.color.tile_green),"Team4");
+                teams[3]=new Team(c.getResources().getColor(R.color.tile_green),"green");
             case 3:
-                teams[2]=new Team(c.getResources().getColor(R.color.tile_yellow),"Team3");
+                teams[2]=new Team(c.getResources().getColor(R.color.tile_yellow),"yellow");
 
             case 2:
-                teams[1]=new Team(c.getResources().getColor(R.color.tile_blue),"Team2");
+                teams[1]=new Team(c.getResources().getColor(R.color.tile_blue),"blue");
             case 1:
-                teams[0]=new Team(c.getResources().getColor(R.color.tile_red),"Team1");
+                teams[0]=new Team(c.getResources().getColor(R.color.tile_red),"red");
         }
             return;}
         switch(numberOfTeams){
             case 4:
-                teams[3]=new Team(c.getResources().getColor(R.color.green_alternative),"Team4");
+                teams[3]=new Team(c.getResources().getColor(R.color.green_alternative),"green");
             case 3:
-                teams[2]=new Team(c.getResources().getColor(R.color.tile_yellow),"Team3");
+                teams[2]=new Team(c.getResources().getColor(R.color.tile_yellow),"yellow");
 
             case 2:
-                teams[1]=new Team(c.getResources().getColor(R.color.tile_blue),"Team2");
+                teams[1]=new Team(c.getResources().getColor(R.color.tile_blue),"blue");
             case 1:
-                teams[0]=new Team(c.getResources().getColor(R.color.red_alternative),"Team1");
+                teams[0]=new Team(c.getResources().getColor(R.color.red_alternative),"red");
         }
     }
 
@@ -122,7 +120,7 @@ public class GameInstance extends AsyncTask {
                         new LatLng(overlayStartLat - overlayHeight * i, overlayStartLng + overlayWidth * (j + 1)))
                         .fillColor(Color.TRANSPARENT)
                         .strokeWidth(1);
-                map.addPolygon(rectangle);
+                gameTiles[i][j].setPolygon(map.addPolygon(rectangle));
             }
 
         }
@@ -138,6 +136,12 @@ public class GameInstance extends AsyncTask {
                 case "red":
                     changeTileTeam(gameTiles[Integer.parseInt(resultList.get(i))][Integer.parseInt(resultList.get(i+1))], teams[0]);
                     break;
+                case "green":
+                    changeTileTeam(gameTiles[Integer.parseInt(resultList.get(i))][Integer.parseInt(resultList.get(i+1))], teams[3]);
+                    break;
+                case "yellow":
+                    changeTileTeam(gameTiles[Integer.parseInt(resultList.get(i))][Integer.parseInt(resultList.get(i+1))], teams[2]);
+                    break;
             }
 
         }
@@ -147,17 +151,29 @@ public class GameInstance extends AsyncTask {
     }
 
     public void changeTileTeam(LatLng userLocation) {
-        GameTile gameTile = findTile(userLocation);
-
-            gameTile.setOwningTeam(teams[0]); // ALWAYS SETS THE OWNER TO TEAM 1.
-            changeTileColor(gameTile, teams[0].teamColor);
+            GameTile gameTile = findTile(userLocation);
+            int response[] =findTileIndex(userLocation);
+            new PushTiles(response[0], response[1], currentTeam).executeOnExecutor(es,null);
+            gameTile.setOwningTeam(currentTeam); // ALWAYS SETS THE OWNER TO TEAM 1.
+            changeTileColor(gameTile, currentTeam.teamColor);
 
     }
     public void changeTileTeam(GameTile gameTile, Team t) {
             gameTile.setOwningTeam(t); // ALWAYS SETS THE OWNER TO TEAM 1.
             changeTileColor(gameTile, t.teamColor);
 
+    }
 
+    private int[] findTileIndex(LatLng userLocation) {
+        for (int i = 0; i < numberOfRows; i++) {
+            for (int j = 0; j < numberOfRows; j++) {
+                if (gameTiles[i][j].locationInTile(userLocation)) {
+                    int returnInts[] = {i,j};
+                    return returnInts;
+                }
+            }
+        }
+        return null;
     }
 
     private GameTile findTile(LatLng userLocation) {
@@ -180,7 +196,8 @@ public class GameInstance extends AsyncTask {
                 new LatLng(gameTile.getLat(), gameTile.getLng() + gameTile.getWidth()))
                 .fillColor(teamColor)
                 .strokeWidth(1);
-        map.addPolygon(rectangle);
+        gameTile.setPolygon(map.addPolygon(rectangle));
+
 
     }
 
@@ -191,8 +208,8 @@ public class GameInstance extends AsyncTask {
 
     while(true){
             try{
-                new ZoneHandler(this).executeOnExecutor(Executors.newFixedThreadPool(2),null);
-                Thread.sleep(600000);
+                new UpdateTiles(this).executeOnExecutor(es, null);
+                Thread.sleep(10000);
 
 
             }
@@ -203,5 +220,27 @@ public class GameInstance extends AsyncTask {
 
 
 
+    }
+
+    public void setTeamColor(String teamColor) {
+        switch (teamColor){
+            case "Red":
+                currentTeam = teams[0];
+                break;
+            case "Blue":
+                currentTeam = teams[1];
+                break;
+            case"Yellow":
+                currentTeam = teams[2];
+                break;
+            case"Green":
+                currentTeam = teams[3];
+                break;
+
+            default:
+                currentTeam = teams[0];
+                break;
+
+        }
     }
 }
