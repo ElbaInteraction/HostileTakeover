@@ -49,7 +49,6 @@ public class MainMapActivity extends FragmentActivity implements LocationListene
     private Button startTakeOverButton;
     private MediaPlayer takeOverSound;
 
-
     //Methods related to te activity
     /**Creates the game. If the intent comes from new game, set up a new game. If the intent comes from the continue game screen, use the parameters provided from the intent (loaded from the database).
      * Also initiates the map, the shakelisteners for taking over a tile, the sound for taking over a tile .

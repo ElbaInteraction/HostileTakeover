@@ -1,8 +1,5 @@
 package elbainteraction.hostiletakeover;
-
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
@@ -13,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 import android.os.Vibrator;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,21 +21,7 @@ public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.
     private boolean voiceEnabled;
     private Vibrator vibrator;
     private TextToSpeech tts;
-    private UtteranceProgressListener mProgressListener = new UtteranceProgressListener() {
-        @Override
-        public void onStart(String utteranceId) {
-        } // Do nothing
-
-        @Override
-        public void onError(String utteranceId) {
-        } // Do nothing.
-
-        //Every time reading a string is finished, accept a new voice command from the user.
-        @Override
-        public void onDone(String utteranceId) {
-                displaySpeechRecognizer();
-        }
-    };
+    private UtteranceProgressListener mProgressListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +30,21 @@ public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.
         setContentView(R.layout.activity_main_menu);
         PreferenceManager.setDefaultValues(this,R.xml.preferences,false);
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
+        mProgressListener =new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+            } // Do nothing
+
+            @Override
+            public void onError(String utteranceId) {
+            } // Do nothing.
+
+            //Every time reading a string is finished, accept a new voice command from the user.
+            @Override
+            public void onDone(String utteranceId) {
+                displaySpeechRecognizer();
+            }
+        };
 
     }
 
@@ -151,9 +150,11 @@ public class MainMenuActivity extends ActionBarActivity implements TextToSpeech.
 
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void say(){
-        tts.speak("Where do you want to navigate? Options are Continue Game, New Game, Tutorial or Options",TextToSpeech.QUEUE_FLUSH,null,"Where do you want to navigate? Options are Continue Game, New Game, Tutorial or Options");
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,"1");
+        tts.speak("Where do you want to navigate? Choices are New Game, Continue Game, Tutorial or Options.", TextToSpeech.QUEUE_FLUSH, map);
+
     }
 
 

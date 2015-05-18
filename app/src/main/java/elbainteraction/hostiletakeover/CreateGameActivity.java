@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,6 +30,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
     private TextToSpeech tts;
     private Vibrator vibrator;
     final static int VIBRATION_TIME = 50; //time for vibration in milliseconds.
+    private UtteranceProgressListener mProgressListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,24 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
         if(getIntent().getBooleanExtra("voiceEnabled",false) || PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_always_voice),false)){
             this.tts = new TextToSpeech(this, this);
         }
+        //A listener to see when the TTS is done speaking. To create the back and forth voice communication.
+      mProgressListener = new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+            } // Do nothing
+
+            @Override
+            public void onError(String utteranceId) {
+            } // Do nothing.
+
+            //Every time reading a string is finished, accept a new voice command from the user.
+            @Override
+            public void onDone(String utteranceId) {
+                if(currentChoice<5){
+                    displaySpeechRecognizer();
+                }
+            }
+        };
 
         //Initiate the vibrator for buttonclicks.
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
@@ -65,24 +85,7 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
         say("Please specify the name of the game.");
     }
 
-    //A listener to see when the TTS is done speaking. To create the back and forth voice communication.
-    private UtteranceProgressListener mProgressListener = new UtteranceProgressListener() {
-        @Override
-        public void onStart(String utteranceId) {
-        } // Do nothing
 
-        @Override
-        public void onError(String utteranceId) {
-        } // Do nothing.
-
-        //Every time reading a string is finished, accept a new voice command from the user.
-        @Override
-        public void onDone(String utteranceId) {
-            if(currentChoice<5){
-                displaySpeechRecognizer();
-            }
-        }
-    };
 
 
     /**
@@ -288,9 +291,11 @@ public class CreateGameActivity extends ActionBarActivity implements TextToSpeec
     }
 
     /*Method for saying (Voice synthesizing)the string specified.*/
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
     private void say(String say){
-        tts.speak(say,TextToSpeech.QUEUE_FLUSH,null,say);
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,say);
+        tts.speak(say,TextToSpeech.QUEUE_FLUSH,map);
     }
 
     //Method for filtering some of the common misheard numbers.
